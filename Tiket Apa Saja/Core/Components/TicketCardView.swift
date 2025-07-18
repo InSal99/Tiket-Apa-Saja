@@ -91,17 +91,6 @@ struct TicketFooter: View {
             Spacer()
             
             TASButton.textOnly(label: "Buy Now", size: .large, style: .primary, isDisabled: isSoldOut, action: bookAction)
-            
-            Button(action: bookAction) {
-                Text("Book")
-                    .font(.system(size: 14, weight: .bold))
-                    .foregroundColor(isSoldOut ? Color.gray8 : .white)
-                    .padding(.horizontal, 16)
-                    .padding(.vertical, 12)
-                    .background(isSoldOut ? Color.gray5 : Color(red: 0.97, green: 0.42, blue: 0.08))
-                    .cornerRadius(8)
-            }
-            .disabled(isSoldOut)
         }
         .padding(.horizontal, 12)
         .padding(.top, 8)

@@ -40,7 +40,7 @@ struct ProductInfoView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text("Stardew Valley: Festival of Seasons")
-                .font(.system(size: 18, weight: .bold))
+                .font(.Title1())
                 .foregroundColor(Color.gray12)
             
             Divider()
@@ -94,7 +94,7 @@ struct TicketView: View {
         VStack(alignment: .leading, spacing: 8) {
             Text("Find the Best Tickets Price")
                 // .font(.system(size: 18, weight: .bold))
-                .font(.Body1())
+                .font(.Subtitle1())
                 .foregroundColor(Color.gray12)
                 .padding(.bottom, 8)
             
