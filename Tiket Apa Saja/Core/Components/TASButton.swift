@@ -29,7 +29,7 @@ struct TASButton: View {
         Button(action: {
             if !isDisabled { action() }
         }) {
-            HStack(spacing: 0) {
+            HStack(spacing: AppSizing.spacing0) {
                 if (iconPosition == .left), let leftIcon = leftIcon {
                     Image(systemName: leftIcon)
                         .frame(width: size.iconSize, height: size.iconSize)
@@ -38,7 +38,7 @@ struct TASButton: View {
                 Text(label)
                     .font(size.fontStyle)
                     .lineLimit(1)
-                    .padding(.horizontal, 4)
+                    .padding(.horizontal, AppSizing.spacing100)
                 
                 if (iconPosition == .right), let rightIcon = rightIcon {
                     Image(systemName: rightIcon)
@@ -46,10 +46,10 @@ struct TASButton: View {
                 }
             }
             .foregroundColor(isDisabled ? .gray : style.foregroundColor(isPressed: isPressed))
-            .padding(.vertical, 8)
-            .padding(.horizontal, 12)
+            .padding(.vertical, AppSizing.spacing200)
+            .padding(.horizontal, AppSizing.spacing300)
             .background(
-                RoundedRectangle(cornerRadius: 6)
+                RoundedRectangle(cornerRadius: AppSizing.borderRadius150)
                     .fill(isDisabled ? Color.gray.opacity(0.3) : style.backgroundColor(isPressed: isPressed))
             )
         }
