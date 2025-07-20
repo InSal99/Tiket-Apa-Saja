@@ -8,5 +8,5 @@ import Foundation
 
 struct PopularEvents: Identifiable {
     var id = UUID()
-    private var events: [Event]
+    var events: [Event]
 }

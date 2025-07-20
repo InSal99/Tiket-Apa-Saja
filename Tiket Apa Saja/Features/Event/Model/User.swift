@@ -8,6 +8,6 @@ import Foundation
 
 struct User: Identifiable {
     var id = UUID()
-    private var eventsInLocation: [Event]
-    private var location: String
+    var eventsInLocation: [Event]
+    var location: String
 }

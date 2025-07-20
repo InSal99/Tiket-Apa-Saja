@@ -8,7 +8,7 @@ import Foundation
 
 struct BestDealAttractions: Identifiable {
     var id = UUID()
-    private var image: String
+    var image: String
     
     init(image: String) {
         self.image = image

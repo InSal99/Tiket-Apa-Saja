@@ -9,19 +9,19 @@ import Foundation
 
 struct Event: Identifiable {
     var id = UUID()
-    private var image: String
-    private var title: String
-    private var date: String
-    private var location: String
-    private var lowestPrice: Int
-    private var discountPercentage: Int
-    private var discountPrice: Int
+    var image: String
+    var title: String
+    var date: String
+    var location: String
+    var lowestPrice: Int
+    var discountPercentage: Int
+    var discountPrice: Int
     
-    private var time: String
+    var time: String
     private var descriptionTitle: String
-    private var description: String
+    var description: String
     
-    private var tickets: [Tickets]
+    var tickets: [Tickets]
     
     init(image: String, title: String, date: String, location: String, lowestPrice: Int, discountPercentage: Int, time: String, descriptionTitle: String, description: String, tickets: [Tickets]) {
         self.image = image

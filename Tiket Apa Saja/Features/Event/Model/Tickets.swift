@@ -9,10 +9,10 @@ import Foundation
 
 struct Tickets: Identifiable {
     var id = UUID()
-    private var Name: String
-    private var description: String
-    private var price: Int
-    private var quota: Int
+    var Name: String
+    var description: String
+    var price: Int
+    var quota: Int
     
     init(Name: String, description: String, price: Int, quota: Int) {
         self.Name = Name
