@@ -54,19 +54,19 @@ struct TicketInfo: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text(ticketType)
-                .font(.system(size: 16, weight: .bold))
+                .font(.Subtitle2())
                 .foregroundColor(isSoldOut ? Color.gray8 : Color.gray12)
                 .lineLimit(1)
             
             Text(description)
-                .font(.system(size: 14))
+                .font(.Caption1())
                 .foregroundColor(isSoldOut ? Color.gray8 : Color.gray10)
                 .lineLimit(1)
             
             Button(action: detailAction) {
                 Text("See Detail")
-                    .font(.system(size: 14, weight: .bold))
-                    .foregroundColor(Color(red: 0.97, green: 0.42, blue: 0.08))
+                    .font(.Label2())
+                    .foregroundColor(Color.orange9)
             }
         }
         .padding(.horizontal, 12)
@@ -84,13 +84,13 @@ struct TicketFooter: View {
     var body: some View {
         HStack {
             Text(price)
-                .font(.system(size: 16, weight: .bold))
+                .font(.Subtitle2())
                 .foregroundColor(isSoldOut ? Color.gray8 : Color.gray12)
                 .lineLimit(1)
             
             Spacer()
             
-            TASButton.textOnly(label: "Buy Now", size: .large, style: .primary, isDisabled: isSoldOut, action: bookAction)
+            TASButton.textOnly(label: "Buy Now", size: .small, style: .primary, isDisabled: isSoldOut, action: bookAction)
         }
         .padding(.horizontal, 12)
         .padding(.top, 8)
@@ -102,7 +102,7 @@ struct TicketSold: View {
     var body: some View {
         Text("Sold Out")
             .frame(maxWidth: .infinity, alignment: .leading)
-            .font(.system(size: 14, weight: .bold))
+            .font(.Label2())
             .foregroundColor(Color.gray11)
             .lineLimit(1)
             .padding(.horizontal, 12)
