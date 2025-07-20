@@ -9,39 +9,44 @@ import SwiftUI
 
 struct HomeView: View {
     @StateObject private var homeViewModel = HomeViewModel()
+    @Binding var navigationPath: NavigationPath
     
     var body: some View {
-        VStack(alignment: .leading, spacing: AppSizing.spacing0) {
-            
-            TopAppBarView(
-                text: $homeViewModel.searchText,
-                locationName: homeViewModel.locationName
-            )
-            
-            Divider()
-                .frame(height: AppSizing.borderWidth25)
-                .background(.gray4)
-            
-            ScrollView {
-                VStack {
-                    HeroCarouselView(promos: homeViewModel.promos)
-                    
-                    CategoriesTilesView(
-                        categories: homeViewModel.categoryViewModel.categories,
-                        onCategoryTap: homeViewModel.handleCategorySelection
-                    )
-                    
-                    SectionsView(
-                        locationName: homeViewModel.locationName,
-                        entertainments: homeViewModel.entertainmentViewModel.entertainments,
-                        onSubscriptionToggle: homeViewModel.handleSubscriptionToggle
-                    )
-                    
-                    Spacer()
+            VStack(alignment: .leading, spacing: AppSizing.spacing0) {
+    
+                TopAppBarView(
+                    text: $homeViewModel.searchText,
+                    locationName: homeViewModel.locationName
+                )
+                
+                Divider()
+                    .frame(height: AppSizing.borderWidth25)
+                    .background(.gray4)
+                
+                ScrollView {
+                    VStack {
+                        HeroCarouselView(promos: homeViewModel.promos)
+                        
+                        CategoriesTilesView(
+                            categories: homeViewModel.categoryViewModel.categories,
+                            onCategoryTap: homeViewModel.handleCategorySelection
+                        )
+                        
+                        SectionsView(
+                            locationName: homeViewModel.locationName,
+                            entertainments: homeViewModel.entertainmentViewModel.entertainments, events: homeViewModel.eventViewModel.events,
+                            onSubscriptionToggle: homeViewModel.handleSubscriptionToggle
+                        )
+                    }
                 }
             }
-        }
-        .background(.gray1)
+            .background(.gray1)
+            .onChange(of: homeViewModel.navigateToCategory) {_, category in
+                if let category = category, category.label == "Event" {
+                    homeViewModel.navigateToCategory = nil
+                    navigationPath.append(category)
+                }
+            }
     }
 }
 
@@ -121,6 +126,7 @@ struct CategoriesTilesView: View {
 struct SectionsView: View {
     let locationName: String
     let entertainments: [Entertainment]
+    let events: [Event]
     let onSubscriptionToggle: (UUID) -> Void
     
     var body: some View {
@@ -129,8 +135,8 @@ struct SectionsView: View {
                 title: "Popular Events",
                 action: { print("See All Popular Events") },
                 content: {
-                    ForEach(1...5, id: \.self) { _ in
-                        Image("event-card-placeholder")
+                    ForEach(events) { item in
+                        ProductCard(image: item.image, date: item.date, title: item.title, location: item.location, price: item.lowestPrice, haveDiscount: item.discountPercentage != 0, discountPercentage: item.discountPercentage, action: { print(item.title + " Selected") })
                     }
                 }
             )
@@ -149,8 +155,8 @@ struct SectionsView: View {
                 title: "Events in " + locationName,
                 action: { print("See All Events in " + locationName) },
                 content: {
-                    ForEach(1...5, id: \.self) { _ in
-                        Image("event-card-placeholder")
+                    ForEach(events) { item in
+                        ProductCard(image: item.image, date: item.date, title: item.title, location: item.location, price: item.lowestPrice, haveDiscount: item.discountPercentage != 0, discountPercentage: item.discountPercentage, action: { print(item.title + " Selected") })
                     }
                 }
             )
@@ -159,10 +165,10 @@ struct SectionsView: View {
                 title: "Entertainments",
                 action: { print("See All Entertainments") },
                 content: {
-                    ForEach(entertainments) { entertainment in
+                    ForEach(entertainments) { item in
                         TASEntertainmentCard(
-                            entertainment: entertainment,
-                            onSubscriptionToggle: { onSubscriptionToggle(entertainment.id) }
+                            entertainment: item,
+                            onSubscriptionToggle: { onSubscriptionToggle(item.id) }
                         )
                     }
                 }
@@ -213,5 +219,7 @@ struct TASSection<Content: View>: View {
 }
 
 #Preview {
-    HomeView()
+    @Previewable @State var navigationPath = NavigationPath()
+    return HomeView(navigationPath: $navigationPath)
+        .environmentObject(HomeViewModel())
 }

@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct Category: Identifiable {
+struct Category: Identifiable, Hashable {
     let id = UUID()
     let icon: String
     let label: String

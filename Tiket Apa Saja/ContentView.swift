@@ -9,20 +9,35 @@ import SwiftUI
 
 struct ContentView: View {
     @State private var selectedTab: BottomAppBar.Tab = .home
+    @State private var navigationPath = NavigationPath()
     
     var body: some View {
-        VStack(spacing: AppSizing.spacing0) {
-            TabView(selection: $selectedTab) {
-                HomeView().tag(BottomAppBar.Tab.home)
-                HomeView().tag(BottomAppBar.Tab.tickets)
-                HomeView().tag(BottomAppBar.Tab.profile)
+        NavigationStack(path: $navigationPath) {
+            VStack(spacing: AppSizing.spacing0) {
+                TabView(selection: $selectedTab) {
+                    HomeView(navigationPath: $navigationPath)
+                        .tag(BottomAppBar.Tab.home)
+                    HomeView(navigationPath: $navigationPath)
+                        .tag(BottomAppBar.Tab.tickets)
+                    HomeView(navigationPath: $navigationPath)
+                        .tag(BottomAppBar.Tab.profile)
+                }
+                .tabViewStyle(.page(indexDisplayMode: .never))
+                .background(.gray3)
+                
+                BottomAppBar(selectedTab: $selectedTab)
+//                if navigationPath.isEmpty {
+//                    BottomAppBar(selectedTab: $selectedTab)
+//                }
             }
-            .tabViewStyle(.page(indexDisplayMode: .never))
-            
-            BottomAppBar(selectedTab: $selectedTab)
+            .padding(.bottom, AppSizing.spacing500)
+            .ignoresSafeArea()
+            .navigationDestination(for: Category.self) { category in
+                if category.label == "Event" {
+                    EventListView(navigationPath: $navigationPath)
+                }
+            }
         }
-        .padding(.bottom, AppSizing.spacing500)
-        .ignoresSafeArea()
     }
 }
 
