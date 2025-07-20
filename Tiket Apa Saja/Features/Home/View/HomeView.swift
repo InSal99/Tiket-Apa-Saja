@@ -8,43 +8,61 @@
 import SwiftUI
 
 struct HomeView: View {
-    @State var text: String = ""
+    @StateObject private var homeViewModel = HomeViewModel()
     
     var body: some View {
         VStack(alignment: .leading, spacing: AppSizing.spacing0) {
-            TopAppBar(text: $text)
+            
+            TopAppBarView(
+                text: $homeViewModel.searchText,
+                locationName: homeViewModel.locationName
+            )
+            
             Divider()
                 .frame(height: AppSizing.borderWidth25)
                 .background(.gray4)
             
-            Spacer()
+            ScrollView {
+                VStack {
+                    HeroCarouselView(promos: homeViewModel.promos)
+                    
+                    CategoriesTilesView(
+                        categories: homeViewModel.categoryViewModel.categories,
+                        onCategoryTap: homeViewModel.handleCategorySelection
+                    )
+                    
+                    SectionsView(
+                        locationName: homeViewModel.locationName,
+                        entertainments: homeViewModel.entertainmentViewModel.entertainments,
+                        onSubscriptionToggle: homeViewModel.handleSubscriptionToggle
+                    )
+                    
+                    Spacer()
+                }
+            }
         }
         .background(.gray1)
     }
 }
 
-struct TopAppBar: View {
+struct TopAppBarView: View {
     @Binding var text: String
+    let locationName: String
     
     private let locationPrefix: String = "Near To"
-    var locationName: String = "Balikpapan"
     
     var body: some View {
         VStack(alignment: .leading, spacing: AppSizing.spacing0) {
             HStack(alignment: .center, spacing: AppSizing.spacing200) {
-                TASSearchBar(text: text)
+                TASSearchBar(placeholders: ["Musical", "Orchestra", "Concert"], prefix: "Search ")
                 
-                Image("product")
-                    .resizable()
-                    .renderingMode(.template)
-                    .frame(width: 24, height: 24)
-                    .foregroundColor(.gray10)
+                TASBadgedIcon(iconName: "product", showBadge: false) {
+                    print("Go to Promo Page")
+                }
                 
-                Image("notifications")
-                    .resizable()
-                    .renderingMode(.template)
-                    .frame(width: 24, height: 24)
-                    .foregroundColor(.gray10)
+                TASBadgedIcon(iconName: "notifications", showBadge: true) {
+                    print("Go to Notification Page")
+                }
             }
             .padding(.vertical, AppSizing.spacing200)
             .padding(.horizontal, AppSizing.spacing400)
@@ -54,15 +72,14 @@ struct TopAppBar: View {
                     .font(.Caption1())
                     .foregroundColor(.gray10)
                 
-                Text(locationName)
-                    .font(.Label2())
-                    .foregroundColor(.gray11)
-                
-                Image("expand-more")
-                    .resizable()
-                    .renderingMode(.template)
-                    .frame(width: 16, height: 16)
-                    .foregroundColor(.gray11)
+                TASButton.withRightIcon(
+                    label: locationName,
+                    icon: "expand-more",
+                    size: .small,
+                    style: .tertiary(.gray11),
+                    isDisabled: false,
+                    action: { print("Choose Location") }
+                )
             }
             .padding(.top, AppSizing.spacing150)
             .padding(.horizontal, AppSizing.spacing400)
@@ -72,6 +89,128 @@ struct TopAppBar: View {
     }
 }
 
+struct HeroCarouselView: View {
+    let promos: [String]
+    
+    var body: some View {
+        TASCarousel(images: promos)
+            .padding(AppSizing.spacing400)
+    }
+}
+
+struct CategoriesTilesView: View {
+    let categories: [Category]
+    let onCategoryTap: (Category) -> Void
+    
+    var body: some View {
+        HStack {
+            ForEach(categories) { category in
+                TASIconButton(
+                    category: category,
+                    isDisabled: false,
+                    action: { onCategoryTap(category) }
+                )
+                .frame(maxWidth: .infinity)
+            }
+        }
+        .padding(.vertical, AppSizing.spacing300)
+        .padding(.horizontal, AppSizing.spacing400)
+    }
+}
+
+struct SectionsView: View {
+    let locationName: String
+    let entertainments: [Entertainment]
+    let onSubscriptionToggle: (UUID) -> Void
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: AppSizing.spacing800) {
+            TASSection(
+                title: "Popular Events",
+                action: { print("See All Popular Events") },
+                content: {
+                    ForEach(1...5, id: \.self) { _ in
+                        Image("event-card-placeholder")
+                    }
+                }
+            )
+            
+            TASSection(
+                title: "Best Deal Attractions",
+                action: { print("See All Best Deal Attractions") },
+                content: {
+                    ForEach(1...5, id: \.self) { _ in
+                        Image("event-card-placeholder")
+                    }
+                }
+            )
+            
+            TASSection(
+                title: "Events in " + locationName,
+                action: { print("See All Events in " + locationName) },
+                content: {
+                    ForEach(1...5, id: \.self) { _ in
+                        Image("event-card-placeholder")
+                    }
+                }
+            )
+            
+            TASSection(
+                title: "Entertainments",
+                action: { print("See All Entertainments") },
+                content: {
+                    ForEach(entertainments) { entertainment in
+                        TASEntertainmentCard(
+                            entertainment: entertainment,
+                            onSubscriptionToggle: { onSubscriptionToggle(entertainment.id) }
+                        )
+                    }
+                }
+            )
+        }
+        .padding(AppSizing.spacing400)
+    }
+}
+
+struct TASSection<Content: View>: View {
+    let title: String
+    let action: () -> Void
+    let content: Content
+    
+    init(title: String, action: @escaping () -> Void, @ViewBuilder content: () -> Content) {
+        self.title = title
+        self.action = action
+        self.content = content()
+    }
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: AppSizing.spacing200) {
+            HStack {
+                Text(title)
+                    .font(.Subtitle1())
+                    .foregroundColor(.gray12)
+                
+                Spacer()
+                
+                TASButton.withRightIcon(
+                    label: "See All",
+                    icon: "chevron-right",
+                    size: .small,
+                    style: .tertiary(),
+                    isDisabled: false,
+                    action: action
+                )
+            }
+            
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: AppSizing.spacing200) {
+                    content
+                }
+            }
+            .scrollClipDisabled()
+        }
+    }
+}
 
 #Preview {
     HomeView()
