@@ -8,34 +8,48 @@
 import SwiftUI
 
 struct Price: View {
-    var normalPrice: Int = 1000000
-    var discountPercentage: Int = 10
-    var specialProce: Int = 900000
+    private var price: Int = 1000000
+    private var discountPercentage: Int = 10
+    private var priceBeforeDiscount: Int = 0
+    private var haveDiscount: Bool = false
     
-    init(normalPrice: Int, discountPercentage: Int, specialProce: Int) {
-        self.normalPrice = normalPrice
-        self.discountPercentage = discountPercentage
-        self.specialProce = specialProce
+    init(price: Int) {
+        self.price = price
     }
     
     var body: some View {
         VStack(alignment: .leading, spacing:0){
-            Text("IDR \(specialProce)")
+            Text("IDR \(price)")
                 .Label2TextStyle()
-                .foregroundStyle(AppColor.Gray.gray10)
-            HStack(spacing: 4){
-                Text("IDR \(normalPrice)")
-                    .Caption2TextStyle()
-                    .strikethrough()
-                    .foregroundStyle(AppColor.Gray.gray9)
-                Text("\(discountPercentage)%")
-                    .Label3TextStyle()
-                    .foregroundStyle(AppColor.Orange.orange9)
+                .foregroundStyle(Color.gray12)
+            if haveDiscount{
+                HStack(spacing: 4){
+                    Text("IDR \(priceBeforeDiscount)")
+                        .Caption2TextStyle()
+                        .strikethrough()
+                        .foregroundStyle(Color.gray9)
+                    Text("\(discountPercentage)%")
+                        .Label3TextStyle()
+                        .foregroundStyle(Color.orange9)
+                }
             }
         }
+        .frame(minHeight: 30, alignment: .bottomLeading)
     }
 }
 
+extension Price {
+    func haveDiscount(discountPercentage: Int) -> Price {
+        var curr = self
+        curr.priceBeforeDiscount = curr.price
+        curr.discountPercentage = discountPercentage
+        curr.price = curr.price - Int(Double(curr.price)*Double(discountPercentage)/100.0)
+        curr.haveDiscount = true
+        return curr
+    }
+}
+
+
 #Preview {
-    Price(normalPrice: 1000000, discountPercentage: 10, specialProce: 900000)
+    Price(price: 1000000).haveDiscount(discountPercentage: 10)
 }
