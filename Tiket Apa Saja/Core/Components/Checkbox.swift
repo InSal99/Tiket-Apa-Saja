@@ -8,13 +8,14 @@
 import SwiftUI
 
 struct Checkbox: View {
-    private var label: String = ""
-    @Binding private var isSelected: Bool
-    private var haveLabel: Bool = false
+    var label: String = ""
+    var haveLabel: Bool = false
+    @Binding var isActive: Bool
     
-    init(isSelected: Binding<Bool>) {
+    init(isActive: Binding<Bool>) {
+        self._isActive = isActive
         self.label = ""
-        self._isSelected = isSelected
+        self.haveLabel = false
     }
     
     var body: some View {
@@ -25,16 +26,16 @@ struct Checkbox: View {
                 Spacer()
             }
             Button {
-                isSelected.toggle()
+                isActive.toggle()
             } label: {
-                if(isSelected == true){
+                if(isActive == true){
                     Image("icon-check-box")
                         .resizable()
                         .renderingMode(.template)
                         .frame(width: 24, height: 24)
                         .aspectRatio(1, contentMode: .fill)
                         .foregroundColor(Color.orange9)
-                }else if(isSelected == false){
+                }else if(isActive == false){
                     Image("icon-check-box-outline-blank")
                         .resizable()
                         .renderingMode(.template)
@@ -61,5 +62,5 @@ extension Checkbox {
 }
 
 #Preview {
-    Checkbox(isSelected: .constant(false)).showLabel(label: "Balikpapan")
+    Checkbox(isActive: .constant(false)).showLabel(label: "Balikpapan")
 }

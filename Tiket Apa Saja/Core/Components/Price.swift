@@ -51,5 +51,6 @@ extension Price {
 
 
 #Preview {
-    Price(price: 1000000).haveDiscount(discountPercentage: 10)
+    Price(price: 1000000)
+        .haveDiscount(discountPercentage: 10)
 }

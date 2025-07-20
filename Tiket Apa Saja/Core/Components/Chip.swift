@@ -18,14 +18,24 @@ struct Chip: View {
     var type: ChipType = .body
     var action: (() -> Void)
     
-    init(text: String, action: @escaping () -> Void) {
+    @Binding var isActive:Bool
+    
+    init(text: String, isActive: Binding<Bool>, action: @escaping () -> Void) {
         self.text = text
         self.type = .body
         self.action = action
+        self._isActive = isActive
     }
     
     var body: some View {
         Button {
+            withAnimation (.spring(duration: 0.2, bounce: 0.5)) {
+                if type == .body {
+                    // Let the parent handle the state change
+                } else {
+                    isActive.toggle()
+                }
+            }
             action()
         } label: {
             VStack(alignment: .leading, spacing: 0){
@@ -38,7 +48,6 @@ struct Chip: View {
                         .renderingMode(.template)
                         .frame(width: 18, height: 18)
                         .aspectRatio(1, contentMode: .fill)
-                        .foregroundColor(Color.gray11)
                 }else if(type == .location){
                     HStack(alignment: .center, spacing: 4){
                         Text("All Location")
@@ -48,16 +57,16 @@ struct Chip: View {
                             .renderingMode(.template)
                             .frame(width: 16, height: 16)
                             .aspectRatio(1, contentMode: .fill)
-                            .foregroundColor(Color.gray11)
                     }
                 }
             }
-            .foregroundStyle(Color.gray11)
+            .foregroundStyle(isActive ? Color.orange9 : Color.gray11)
             .padding(.horizontal, 12)
             .padding(.vertical, 6)
             .background(
                 Capsule()
-                    .stroke(Color.gray5, lineWidth: 1)
+                    .stroke(isActive ? Color.orange10 : Color.gray5, lineWidth: 1)
+                    .fill(isActive ? Color.orange4 : Color.clear)
             )
             .clipShape(Capsule())
         }
@@ -73,5 +82,5 @@ extension Chip {
 }
 
 #Preview {
-    Chip(text: "Upcoming", action: {}).chipType(type: .location)
+    Chip(text: "Upcoming", isActive: .constant(true), action: {}).chipType(type: .location)
 }

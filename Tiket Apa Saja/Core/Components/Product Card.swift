@@ -20,59 +20,66 @@ struct ProductCard: View {
     
     private var haveDiscount: Bool = false
     
-    init(image: String, date: String, title: String, location: String, price: Int) {
+    var action: (() -> Void)
+    
+    init(image: String, date: String, title: String, location: String, price: Int, haveDiscount: Bool, discountPercentage: Int, action: @escaping (() -> Void)) {
         self.image = image
         self.date = date
         self.title = title
         self.location = location
         self.price = price
+        self.action = action
+        self.haveDiscount = haveDiscount
+        self.discountPercentage = discountPercentage
     }
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 0){
-            Image(image)
-                .resizable()
-                .aspectRatio(contentMode: .fill)
-                .frame(width: 165.5, height: 108)
-            VStack(alignment: .leading, spacing: 16){
-                VStack(alignment: .leading, spacing: 4){
-                    Text(date)
-                        .Caption2TextStyle()
-                        .foregroundStyle(Color.gray10)
-                    Text(title)
-                        .Label2TextStyle()
-                        .multilineTextAlignment(.leading)
-                        .lineLimit(2)
-                        .foregroundStyle(Color.gray12)
-                    Text(location)
-                        .Caption2TextStyle()
-                        .foregroundStyle(Color.gray10)
-                }.frame(minHeight: 68)
-                if haveDiscount{
-                    Price(price: price).haveDiscount(discountPercentage: discountPercentage ?? 0)
-                }else if !haveDiscount{
-                    Price(price: price)
+        Button {
+            action()
+        } label: {
+            VStack(alignment: .leading, spacing: 0){
+                Image(image)
+                    .resizable()
+                    .aspectRatio(contentMode: .fill)
+                    .frame(width: 165.5, height: 108)
+                VStack(alignment: .leading, spacing: 16){
+                    VStack(alignment: .leading, spacing: 4){
+                        Text(date)
+                            .Caption2TextStyle()
+                            .foregroundStyle(Color.gray10)
+                        Text(title)
+                            .Label2TextStyle()
+                            .multilineTextAlignment(.leading)
+                            .lineLimit(2)
+                            .foregroundStyle(Color.gray12)
+                        Text(location)
+                            .Caption2TextStyle()
+                            .foregroundStyle(Color.gray10)
+                    }.frame(minHeight: 68, alignment: .topLeading)
+                    if haveDiscount{
+                        Price(price: price).haveDiscount(discountPercentage: discountPercentage ?? 0)
+                    }else if !haveDiscount{
+                        Price(price: price)
+                    }
                 }
+                .padding(8)
             }
-            .padding(8)
+            .frame(width: 165.5, height: 238)
+            .background(Color.gray4)
+            .clipShape(RoundedRectangle(cornerRadius: 8))
         }
-        .frame(width: 165.5, height: 238)
-        .background(Color.gray4)
-        .clipShape(RoundedRectangle(cornerRadius: 8))
-
     }
 }
 
-extension ProductCard {
-    func haveDiscount(discountPercentage: Int?) -> ProductCard {
-        var curr = self
-        curr.discountPercentage = discountPercentage
-        curr.haveDiscount = true
-        return curr
-    }
-}
+//extension ProductCard {
+//    func haveDiscount(discountPercentage: Int?) -> ProductCard {
+//        var curr = self
+//        curr.discountPercentage = discountPercentage
+//        curr.haveDiscount = true
+//        return curr
+//    }
+//}
 
 #Preview {
-    ProductCard(image: "product-musikal-petualangan-sherina", date: "15 Jul 2025", title: "Musikal Petualangan Sherina", location: "Jakarta", price: 1000000)
-        .haveDiscount(discountPercentage: 20)
+    ProductCard(image: "product-musikal-petualangan-sherina", date: "15 Jul 2025", title: "Musikal Petualangan Sherina", location: "Jakarta", price: 1000000, haveDiscount: true, discountPercentage: 10, action: {})
 }
