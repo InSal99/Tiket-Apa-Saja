@@ -11,10 +11,19 @@ struct TASSearchBar: View {
     @State var text: String = ""
     @State private var isAnimating: Bool = true
     @State private var animatedPlaceholder = ""
-    @State private var placeholderIndex: Int = 0
+    @State private var currentWordIndex: Int = 0
     
-    private let placeholders = ["Musical", "Orchestra", "Concert"]
-    private let prefix = "Search "
+    let placeholders: [String]
+    let onSearchAction: ((String) -> Void)? = nil
+    let prefix: String
+    
+    private struct SearchBarConstants {
+        static let iconSize: CGFloat = 24
+        static let characterDelay: Double = 0.1
+        static let wordPause: Double = 1.5
+        static let clearButtonAnimationDuration: Double = 0.2
+        static let clearButtonBounce: Double = 0.4
+    }
     
     var body: some View {
         HStack(alignment: .center, spacing: AppSizing.spacing200) {
@@ -22,7 +31,7 @@ struct TASSearchBar: View {
                 .resizable()
                 .renderingMode(.template)
                 .foregroundColor(.gray10)
-                .frame(width: 24, height: 24)
+                .frame(width: SearchBarConstants.iconSize, height: SearchBarConstants.iconSize)
             TextField(
                 "",
                 text: $text,
@@ -33,6 +42,9 @@ struct TASSearchBar: View {
             .font(.Body2())
             .foregroundColor(.gray12)
             .disableAutocorrection(true)
+            .onSubmit {
+                onSearchAction?(text)
+            }
             
             // Clear button (shown only when there's text)
             if !text.isEmpty {
@@ -43,10 +55,10 @@ struct TASSearchBar: View {
                         .resizable()
                         .renderingMode(.template)
                         .foregroundColor(.gray10)
-                        .frame(width: 24, height: 24)
+                        .frame(width: SearchBarConstants.iconSize, height: SearchBarConstants.iconSize)
                 }
                 .buttonStyle(PlainButtonStyle())
-                .transition(.scale(scale: 0).animation(.spring(duration: 0.2, bounce: 0.4, blendDuration: 0.8)))
+                .transition(.scale.animation(.spring(duration: SearchBarConstants.clearButtonAnimationDuration, bounce: SearchBarConstants.clearButtonBounce)))
             }
         }
         .padding(.horizontal, AppSizing.spacing400)
@@ -64,27 +76,40 @@ struct TASSearchBar: View {
     }
     
     private func startAnimation() {
-        var currentIndex = 0
+        guard !placeholders.isEmpty else { return }
+        isAnimating = true
+        currentWordIndex = 0
+        animateCurrentWord()
+    }
+    
+    private func animateCurrentWord() {
+        guard isAnimating && currentWordIndex < placeholders.count else { return }
         
-        func animateWord(_ word: String, characterIndex: Int = 0) {
-            guard characterIndex < word.count else {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-                    currentIndex = (currentIndex + 1) % placeholders.count
-                    animateWord(placeholders[currentIndex])
-                }
-                return
+        let currentWord = placeholders[currentWordIndex]
+        animatedPlaceholder = ""
+        animateWord(currentWord, characterIndex: 0)
+    }
+    
+    private func animateWord(_ word: String, characterIndex: Int) {
+        guard isAnimating else { return }
+        
+        guard characterIndex < word.count else {
+            DispatchQueue.main.asyncAfter(deadline: .now() + SearchBarConstants.wordPause) {
+                guard self.isAnimating else { return }
+                self.currentWordIndex = (self.currentWordIndex + 1) % self.placeholders.count
+                self.animateCurrentWord()
             }
-            
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                animatedPlaceholder = String(word.prefix(characterIndex + 1))
-                animateWord(word, characterIndex: characterIndex + 1)
-            }
+            return
         }
-        animateWord(placeholders[currentIndex])
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + SearchBarConstants.characterDelay) {
+            guard self.isAnimating else { return }
+            self.animatedPlaceholder = String(word.prefix(characterIndex + 1))
+            self.animateWord(word, characterIndex: characterIndex + 1)
+        }
     }
 }
 
-
 #Preview {
-    TASSearchBar()
+    TASSearchBar(placeholders: ["Musical", "Orchestra", "Concert"], prefix: "Search ")
 }
