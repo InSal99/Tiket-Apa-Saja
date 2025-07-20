@@ -10,13 +10,17 @@ import SwiftUI
 class HomeViewModel: ObservableObject {
     let categoryViewModel = CategoryViewModel()
     let entertainmentViewModel = EntertainmentViewModel()
+    let eventViewModel = EventViewModel()
     
+    @Published var navigateToCategory: Category? = nil
     @Published var searchText: String = ""
+    
     let locationName: String = "Balikpapan"
     let promos: [String] = ["banner1", "banner1", "banner1", "banner1", "banner1"]
     
     func handleCategorySelection(_ category: Category) {
         categoryViewModel.selectCategory(category)
+        navigateToCategory = category
     }
     
     func handleSubscriptionToggle(_ id: UUID) {

@@ -22,6 +22,8 @@ struct EventListView: View {
     @State private var activeBodyChip: String? = nil
     @State private var appliedBodyChip: String? = nil
     
+    @Binding var navigationPath: NavigationPath
+    
     private var hasLocationFilters: Bool {
         let locationFilters = ["Balikpapan", "Surabaya", "Jakarta", "Semarang", "Bali", "Blitar"]
         return locationFilters.contains { appliedFilter.contains($0) }
@@ -141,7 +143,7 @@ struct EventListView: View {
 
     
     var body: some View {
-        NavigationStack {
+//        NavigationStack {
             VStack(spacing: 0){
                 ScrollView(.horizontal, showsIndicators: false) {
                     LazyHStack(spacing: AppSizing.spacing200) {
@@ -190,9 +192,21 @@ struct EventListView: View {
             .toolbarBackground(.visible, for: .navigationBar)
             .toolbar {
                 ToolbarItemGroup(placement: .navigationBarLeading) {
-                    Text("Event")
-                        .Subtitle1TextStyle()
-                        .foregroundColor(.white)
+                    HStack(alignment: .center, spacing: AppSizing.spacing200) {
+                        Button {
+                            navigationPath.removeLast()
+                        } label: {
+                            Image("chevron-left")
+                                .resizable()
+                                .renderingMode(.template)
+                                .frame(width: 24, height: 24)
+                                .foregroundColor(.gray10)
+                        }
+
+                        Text("Event")
+                            .Subtitle1TextStyle()
+                            .foregroundColor(.baseWhite)
+                    }
                 }
                 
                 ToolbarItemGroup(placement: .navigationBarTrailing) {
@@ -204,11 +218,11 @@ struct EventListView: View {
                             .renderingMode(.template)
                             .frame(width: 24, height: 24)
                             .aspectRatio(1, contentMode: .fill)
-                            .foregroundColor(Color.gray10)
+                            .foregroundColor(.gray10)
                     }
                 }
             }
-        }
+//        }
         .sheet(isPresented: $showSheetFilter) {
             ZStack {
                 Color.gray3.ignoresSafeArea()
@@ -330,6 +344,7 @@ struct EventListView: View {
             .presentationDragIndicator(.visible)
             .presentationCornerRadius(16)
         }
+        .navigationBarBackButtonHidden(true)
     }
 }
 
@@ -614,5 +629,10 @@ struct EventListView: View {
 //}
 
 #Preview {
-    EventListView()
+    @Previewable @State var navigationPath = NavigationPath()
+    let viewModel = EventViewModel()
+    NavigationStack(path: $navigationPath) {
+        EventListView(navigationPath: $navigationPath)
+            .environmentObject(viewModel)
+    }
 }

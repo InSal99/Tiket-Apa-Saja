@@ -11,7 +11,8 @@ import SwiftUI
 struct Tiket_Apa_SajaApp: App {
     var body: some Scene {
         WindowGroup {
-            EventListView()
+//            EventListView()
+            ContentView()
         }
     }
 }
