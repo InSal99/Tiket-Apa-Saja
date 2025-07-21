@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct TASBadgedIcon: View {
+struct BadgedIcon: View {
     var iconName: String
     var showBadge: Bool
     var action: () -> Void
@@ -53,5 +53,5 @@ struct TASBadgedIcon: View {
 }
 
 #Preview {
-    TASBadgedIcon(iconName: "notifications", showBadge: true, action: {})
+    BadgedIcon(iconName: "notifications", showBadge: true, action: {})
 }

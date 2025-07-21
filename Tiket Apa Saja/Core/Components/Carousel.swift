@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct TASCarousel: View {
+struct Carousel: View {
     @State private var currentIndex = 0
     @State private var autoScrollTimer: Timer?
     
@@ -61,5 +61,5 @@ struct TASCarousel: View {
 }
 
 #Preview {
-    TASCarousel(images: ["banner1", "banner1", "banner1", "banner1"])
+    Carousel(images: ["banner1", "banner1", "banner1", "banner1"])
 }

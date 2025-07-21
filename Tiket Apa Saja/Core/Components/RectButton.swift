@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct TASButton: View {
+struct RectButton: View {
     let label: String
     let action: () -> Void
     var leftIcon: String? = nil
@@ -43,7 +43,7 @@ struct TASButton: View {
                 Text(label)
                     .font(size.fontStyle)
                     .lineLimit(1)
-                    .padding(.horizontal, AppSizing.spacing100)
+                    .padding(.horizontal, style.textPadding())
                 
                 if let rightIcon = rightIcon {
                     iconView(rightIcon)
@@ -121,6 +121,13 @@ enum CustomButtonStyle {
         }
     }
     
+    func textPadding() -> CGFloat {
+        switch self {
+        case .tertiary: return AppSizing.spacing0
+        default: return AppSizing.spacing100
+        }
+    }
+    
     func verticalPadding() -> CGFloat {
         switch self {
         case .tertiary: return AppSizing.spacing0
@@ -136,7 +143,7 @@ enum CustomButtonStyle {
     }
 }
 
-extension TASButton {
+extension RectButton {
     static func withLeftIcon(
         label: String,
         icon: String,
@@ -145,8 +152,8 @@ extension TASButton {
         isDisabled: Bool,
         maxWidth: CGFloat? = nil,
         action: @escaping () -> Void
-    ) -> TASButton {
-        TASButton(
+    ) -> RectButton {
+        RectButton(
             label: label,
             action: action,
             leftIcon: icon,
@@ -165,8 +172,8 @@ extension TASButton {
         isDisabled: Bool,
         maxWidth: CGFloat? = nil,
         action: @escaping () -> Void
-    ) -> TASButton {
-        TASButton(
+    ) -> RectButton {
+        RectButton(
             label: label,
             action: action,
             rightIcon: icon,
@@ -184,8 +191,8 @@ extension TASButton {
         isDisabled: Bool,
         maxWidth: CGFloat? = nil,
         action: @escaping () -> Void
-    ) -> TASButton {
-        TASButton(
+    ) -> RectButton {
+        RectButton(
             label: label,
             action: action,
             size: size,
@@ -199,5 +206,5 @@ extension TASButton {
 #Preview {
 //    TASButton.textOnly(title: "Tap Me", size: .large, style: .primary, isDisabled: false, action: { })
 //    TASButton.withRightIcon(title: "Tap Me", icon: "plus", size: .large, style: .tertiary, isDisabled: false, action: { })
-    TASButton.withLeftIcon(label: "Tap Me", icon: "chevron-right", size: .large, style: .primary, isDisabled: false, action: { })
+    RectButton.withLeftIcon(label: "Tap Me", icon: "chevron-right", size: .large, style: .primary, isDisabled: false, action: { })
 }

@@ -11,11 +11,12 @@ class HomeViewModel: ObservableObject {
     let categoryViewModel = CategoryViewModel()
     let entertainmentViewModel = EntertainmentViewModel()
     let eventViewModel = EventViewModel()
+    let attractionViewModel = AttractionViewModel()
     
     @Published var navigateToCategory: Category? = nil
     @Published var searchText: String = ""
     
-    let locationName: String = "Balikpapan"
+    let locationName: String = "Jakarta"
     let promos: [String] = ["banner1", "banner1", "banner1", "banner1", "banner1"]
     
     func handleCategorySelection(_ category: Category) {
@@ -25,5 +26,9 @@ class HomeViewModel: ObservableObject {
     
     func handleSubscriptionToggle(_ id: UUID) {
         entertainmentViewModel.toggleSubscription(for: id)
+    }
+    
+    func handleLocalEvents() -> [Event] {
+        eventViewModel.getLocalEvents(city: locationName)
     }
 }

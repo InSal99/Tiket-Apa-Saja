@@ -1,13 +1,13 @@
 //
-//  TASSearchBar.swift
+//  SearchBar.swift
 //  Tiket Apa Saja
 //
-//  Created by Intan Saliya Utomo on 19/07/25.
+//  Created by Intan Saliya Utomo on 21/07/25.
 //
 
 import SwiftUI
 
-struct TASSearchBar: View {
+struct SearchBar: View {
     @State var text: String = ""
     @State private var isAnimating: Bool = true
     @State private var animatedPlaceholder = ""
@@ -111,5 +111,5 @@ struct TASSearchBar: View {
 }
 
 #Preview {
-    TASSearchBar(placeholders: ["Musical", "Orchestra", "Concert"], prefix: "Search ")
+    SearchBar(placeholders: ["Musical", "Orchestra", "Concert"], prefix: "Search ")
 }

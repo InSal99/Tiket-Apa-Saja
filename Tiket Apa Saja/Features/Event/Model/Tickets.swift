@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Tickets: Identifiable {
+struct Tickets: Identifiable, Hashable {
     var id = UUID()
     var Name: String
     var description: String
@@ -19,5 +19,9 @@ struct Tickets: Identifiable {
         self.description = description
         self.price = price
         self.quota = quota
+    }
+    
+    func isSoldOut(from quota: Int) -> Bool {
+        return quota == 0
     }
 }

@@ -7,15 +7,19 @@
 
 import Foundation
 
-struct Event: Identifiable {
+struct Event: Identifiable, Hashable {
     var id = UUID()
     var image: String
     var title: String
     var date: String
+    var venue: String
+    var city: String
     var location: String
     var lowestPrice: Int
     var discountPercentage: Int
     var discountPrice: Int
+    var isBookmarked: Bool
+    var isPopular: Bool
     
     var time: String
     private var descriptionTitle: String
@@ -37,12 +41,14 @@ struct Event: Identifiable {
         return eventDate > Date()
     }
     
-    init(image: String, title: String, date: String, location: String, lowestPrice: Int, discountPercentage: Int, time: String, descriptionTitle: String, description: String, tickets: [Tickets], category: String, type: String, dateAdded: Date = Date()) {
+    init(image: String, title: String, date: String, venue: String, city: String, location: String, discountPercentage: Int, time: String, descriptionTitle: String, description: String, tickets: [Tickets], category: String, type: String, dateAdded: Date = Date(), isBookmarked: Bool, isPopular:Bool) {
         self.image = image
         self.title = title
         self.date = date
+        self.venue = venue
+        self.city = city
         self.location = location
-        self.lowestPrice = lowestPrice
+        self.lowestPrice = tickets.min(by: { $0.price < $1.price })?.price ?? 0
         self.discountPercentage = discountPercentage
         self.discountPrice = lowestPrice - Int(Double(lowestPrice)*Double(discountPercentage)/100.0)
         self.time = time
@@ -52,36 +58,13 @@ struct Event: Identifiable {
         self.category = category
         self.type = type
         self.dateAdded = dateAdded
+        self.isBookmarked = isBookmarked
+        self.isPopular = isPopular
+    }
+    
+    func formatEventDate(from date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "EEEE, dd MMMM yyyy"
+        return formatter.string(from: date)
     }
 }
-
-//struct Event: Identifiable {
-//    var id = UUID()
-//    var image: String
-//    var title: String
-//    var date: String
-//    var location: String
-//    var lowestPrice: Int
-//    var discountPercentage: Int
-//    var discountPrice: Int
-//    
-//    var time: String
-//    private var descriptionTitle: String
-//    var description: String
-//    
-//    var tickets: [Tickets]
-//    
-//    init(image: String, title: String, date: String, location: String, lowestPrice: Int, discountPercentage: Int, time: String, descriptionTitle: String, description: String, tickets: [Tickets]) {
-//        self.image = image
-//        self.title = title
-//        self.date = date
-//        self.location = location
-//        self.lowestPrice = lowestPrice
-//        self.discountPercentage = discountPercentage
-//        self.discountPrice = lowestPrice - Int(Double(lowestPrice)*Double(discountPercentage)/100.0)
-//        self.time = time
-//        self.descriptionTitle = descriptionTitle
-//        self.description = description
-//        self.tickets = tickets
-//    }
-//}

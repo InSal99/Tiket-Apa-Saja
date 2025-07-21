@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct TASIconButton: View {
+struct IconButton: View {
     let category: Category
     var isDisabled: Bool
     var action: () -> Void
@@ -63,5 +63,5 @@ struct TASIconButton: View {
 }
 
 #Preview {
-    TASIconButton(category: Category(icon: "cat-travel", label: "Travel"), isDisabled: false, action: {})
+    IconButton(category: Category(icon: "cat-travel", label: "Travel"), isDisabled: false, action: {})
 }

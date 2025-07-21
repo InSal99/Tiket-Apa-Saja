@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct TASEntertainmentCard: View {
+struct EntertainmentCard: View {
     @State var entertainment: Entertainment
     let onSubscriptionToggle: (() -> Void)?
     
@@ -20,7 +20,7 @@ struct TASEntertainmentCard: View {
                 .clipShape(Circle())
                 .padding(AppSizing.spacing300)
             
-            TASButton.textOnly(label: entertainment.isSubscribed ? "Subscribed" : "Subscribe", size: .large, style: .secondary, isDisabled: entertainment.isSubscribed ? true : false, maxWidth: .infinity, action: { entertainment.isSubscribed.toggle() })
+            RectButton.textOnly(label: entertainment.isSubscribed ? "Subscribed" : "Subscribe", size: .large, style: .secondary, isDisabled: entertainment.isSubscribed ? true : false, maxWidth: .infinity, action: { entertainment.isSubscribed.toggle() })
         }
         .padding(AppSizing.spacing200)
         .frame(width: 140)
@@ -32,5 +32,5 @@ struct TASEntertainmentCard: View {
 }
 
 #Preview {
-    TASEntertainmentCard(entertainment: Entertainment(icon: "banner1", isSubscribed: false), onSubscriptionToggle: {})
+    EntertainmentCard(entertainment: Entertainment(icon: "banner1", isSubscribed: false), onSubscriptionToggle: {})
 }

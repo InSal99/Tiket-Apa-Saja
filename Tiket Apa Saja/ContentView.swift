@@ -26,9 +26,6 @@ struct ContentView: View {
                 .background(.gray3)
                 
                 BottomAppBar(selectedTab: $selectedTab)
-//                if navigationPath.isEmpty {
-//                    BottomAppBar(selectedTab: $selectedTab)
-//                }
             }
             .padding(.bottom, AppSizing.spacing500)
             .ignoresSafeArea()
@@ -110,15 +107,11 @@ struct TabItem: View {
     }
     
     private func performAction() {
-        
         withAnimation(animation) {
             isPressed = true
         }
-        
         action()
         tab.logMessage()
-        
-        // Reset button state after done pressing
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
             withAnimation(animation) {
                 isPressed = false

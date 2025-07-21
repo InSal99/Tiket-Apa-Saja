@@ -8,37 +8,34 @@
 import SwiftUI
 
 struct TicketCard: View {
-    let ticketType: String
-    let description: String
-    let price: String
-    let isSoldOut: Bool
+    let ticket: Tickets
     let detailAction: () -> Void
     let bookAction: () -> Void
     
     var body: some View {
-        VStack(spacing: 0) {
-            VStack(spacing: 0) {
+        VStack(spacing: AppSizing.spacing0) {
+            VStack(spacing: AppSizing.spacing0) {
                 TicketInfo(
-                    isSoldOut: isSoldOut,
-                    ticketType: ticketType,
-                    description: description,
+                    isSoldOut: ticket.isSoldOut(from: ticket.quota),
+                    ticketType: ticket.Name,
+                    description: ticket.description,
                     detailAction: detailAction
                 )
                 
                 Divider()
-                    .overlay(Color.gray6)
+                    .background(.gray6)
                 
                 TicketFooter(
-                    price: price,
-                    isSoldOut: isSoldOut,
+                    price: ticket.price,
+                    isSoldOut: ticket.isSoldOut(from: ticket.quota),
                     bookAction: bookAction
                 )
             }
-            .background(Color.gray4)
+            .background(.gray4)
             
-            if isSoldOut {
+            if ticket.isSoldOut(from: ticket.quota) {
                 TicketSold()
-                    .background(Color.gray6)
+                    .background(.gray6)
             }
         }
         .cornerRadius(8)
@@ -52,7 +49,7 @@ struct TicketInfo: View {
     let detailAction: () -> Void
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment: .leading, spacing: AppSizing.spacing200) {
             Text(ticketType)
                 .font(.Subtitle2())
                 .foregroundColor(isSoldOut ? Color.gray8 : Color.gray12)
@@ -63,77 +60,52 @@ struct TicketInfo: View {
                 .foregroundColor(isSoldOut ? Color.gray8 : Color.gray10)
                 .lineLimit(1)
             
-            Button(action: detailAction) {
-                Text("See Detail")
-                    .font(.Label2())
-                    .foregroundColor(Color.orange9)
-            }
+            RectButton.textOnly(label: "See Detail", size: .small, style: .tertiary(), isDisabled: false, action: detailAction)
         }
-        .padding(.horizontal, 12)
-        .padding(.top, 12)
-        .padding(.bottom, 8)
+        .padding(.horizontal, AppSizing.spacing300)
+        .padding(.top, AppSizing.spacing300)
+        .padding(.bottom, AppSizing.spacing400)
         .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
 
 struct TicketFooter: View {
-    let price: String
+    let price: Int
     let isSoldOut: Bool
     let bookAction: () -> Void
     
     var body: some View {
         HStack {
-            Text(price)
-                .font(.Subtitle2())
+            Text("IDR " + price.formatted())
+                .Subtitle2TextStyle()
                 .foregroundColor(isSoldOut ? Color.gray8 : Color.gray12)
                 .lineLimit(1)
             
             Spacer()
             
-            TASButton.textOnly(label: "Buy Now", size: .small, style: .primary, isDisabled: isSoldOut, action: bookAction)
+            RectButton.textOnly(label: "Book", size: .small, style: .primary, isDisabled: isSoldOut, action: bookAction)
         }
-        .padding(.horizontal, 12)
-        .padding(.top, 8)
-        .padding(.bottom, 12)
+        .padding(.horizontal, AppSizing.spacing300)
+        .padding(.top, AppSizing.spacing200)
+        .padding(.bottom, AppSizing.spacing300)
     }
 }
 
 struct TicketSold: View {
     var body: some View {
         Text("Sold Out")
+            .Label2TextStyle()
             .frame(maxWidth: .infinity, alignment: .leading)
-            .font(.Label2())
-            .foregroundColor(Color.gray11)
+            .foregroundColor(.gray11)
             .lineLimit(1)
-            .padding(.horizontal, 12)
-            .padding(.vertical, 8)
+            .padding(.horizontal, AppSizing.spacing300)
+            .padding(.vertical, AppSizing.spacing200)
     }
 }
 
-struct TicketCard_Previews: PreviewProvider {
-    static var previews: some View {
-        Group {
-            TicketCard(
-                ticketType: "Early Bird - Steel",
-                description: "This ticket is non-refundable and special standing area",
-                price: "IDR 1.150.000",
-                isSoldOut: false,
-                detailAction: { print("Show all tapped") },
-                bookAction: { print("Book tapped") }
-            )
-            .previewDisplayName("Available Ticket")
-            
-            TicketCard(
-                ticketType: "VIP - Gold",
-                description: "Exclusive access with premium benefits",
-                price: "IDR 2.500.000",
-                isSoldOut: true,
-                detailAction: { print("Show all tapped") },
-                bookAction: { print("Book tapped") }
-            )
-            .previewDisplayName("Sold Out Ticket")
-        }
-        .padding()
-        .previewLayout(.sizeThatFits)
-    }
+#Preview {
+    TicketCard(
+        ticket: Tickets(Name: "Early Bird - Steel", description: "This ticket is non-refundable and special standing area", price: 1500000, quota: 10), detailAction: { print("Show all tapped") },
+        bookAction: { print("Book tapped") }
+    )
 }

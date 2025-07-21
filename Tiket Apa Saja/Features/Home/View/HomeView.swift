@@ -34,7 +34,7 @@ struct HomeView: View {
                         
                         SectionsView(
                             locationName: homeViewModel.locationName,
-                            entertainments: homeViewModel.entertainmentViewModel.entertainments, events: homeViewModel.eventViewModel.events,
+                            entertainments: homeViewModel.entertainmentViewModel.entertainments, attractions: homeViewModel.attractionViewModel.attractions, popularEvents: homeViewModel.eventViewModel.getPopularEvents(), localEvents: homeViewModel.handleLocalEvents(),
                             onSubscriptionToggle: homeViewModel.handleSubscriptionToggle
                         )
                     }
@@ -59,13 +59,13 @@ struct TopAppBarView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: AppSizing.spacing0) {
             HStack(alignment: .center, spacing: AppSizing.spacing200) {
-                TASSearchBar(placeholders: ["Musical", "Orchestra", "Concert"], prefix: "Search ")
+                SearchBar(placeholders: ["Musical", "Orchestra", "Concert"], prefix: "Search ")
                 
-                TASBadgedIcon(iconName: "product", showBadge: false) {
+                BadgedIcon(iconName: "product", showBadge: false) {
                     print("Go to Promo Page")
                 }
                 
-                TASBadgedIcon(iconName: "notifications", showBadge: true) {
+                BadgedIcon(iconName: "notifications", showBadge: true) {
                     print("Go to Notification Page")
                 }
             }
@@ -77,7 +77,7 @@ struct TopAppBarView: View {
                     .font(.Caption1())
                     .foregroundColor(.gray10)
                 
-                TASButton.withRightIcon(
+                RectButton.withRightIcon(
                     label: locationName,
                     icon: "expand-more",
                     size: .small,
@@ -98,7 +98,7 @@ struct HeroCarouselView: View {
     let promos: [String]
     
     var body: some View {
-        TASCarousel(images: promos)
+        Carousel(images: promos)
             .padding(AppSizing.spacing400)
     }
 }
@@ -110,7 +110,7 @@ struct CategoriesTilesView: View {
     var body: some View {
         HStack {
             ForEach(categories) { category in
-                TASIconButton(
+                IconButton(
                     category: category,
                     isDisabled: false,
                     action: { onCategoryTap(category) }
@@ -126,7 +126,9 @@ struct CategoriesTilesView: View {
 struct SectionsView: View {
     let locationName: String
     let entertainments: [Entertainment]
-    let events: [Event]
+    let attractions: [Attraction]
+    let popularEvents: [Event]
+    let localEvents: [Event]
     let onSubscriptionToggle: (UUID) -> Void
     
     var body: some View {
@@ -135,8 +137,8 @@ struct SectionsView: View {
                 title: "Popular Events",
                 action: { print("See All Popular Events") },
                 content: {
-                    ForEach(events) { item in
-                        ProductCard(image: item.image, date: item.date, title: item.title, location: item.location, price: item.lowestPrice, haveDiscount: item.discountPercentage != 0, discountPercentage: item.discountPercentage, action: { print(item.title + " Selected") })
+                    ForEach(popularEvents) { item in
+                        ProductCard(image: item.image, date: item.date, title: item.title, location: item.city, price: item.lowestPrice, haveDiscount: item.discountPercentage != 0, discountPercentage: item.discountPercentage, action: { print(item.title + " Selected") })
                     }
                 }
             )
@@ -145,8 +147,8 @@ struct SectionsView: View {
                 title: "Best Deal Attractions",
                 action: { print("See All Best Deal Attractions") },
                 content: {
-                    ForEach(1...5, id: \.self) { _ in
-                        Image("event-card-placeholder")
+                    ForEach(attractions) { item in
+                        Image(item.image)
                     }
                 }
             )
@@ -155,8 +157,8 @@ struct SectionsView: View {
                 title: "Events in " + locationName,
                 action: { print("See All Events in " + locationName) },
                 content: {
-                    ForEach(events) { item in
-                        ProductCard(image: item.image, date: item.date, title: item.title, location: item.location, price: item.lowestPrice, haveDiscount: item.discountPercentage != 0, discountPercentage: item.discountPercentage, action: { print(item.title + " Selected") })
+                    ForEach(localEvents) { item in
+                        ProductCard(image: item.image, date: item.date, title: item.title, location: item.city, price: item.lowestPrice, haveDiscount: item.discountPercentage != 0, discountPercentage: item.discountPercentage, action: { print(item.title + " Selected") })
                     }
                 }
             )
@@ -166,7 +168,7 @@ struct SectionsView: View {
                 action: { print("See All Entertainments") },
                 content: {
                     ForEach(entertainments) { item in
-                        TASEntertainmentCard(
+                        EntertainmentCard(
                             entertainment: item,
                             onSubscriptionToggle: { onSubscriptionToggle(item.id) }
                         )
@@ -198,7 +200,7 @@ struct TASSection<Content: View>: View {
                 
                 Spacer()
                 
-                TASButton.withRightIcon(
+                RectButton.withRightIcon(
                     label: "See All",
                     icon: "chevron-right",
                     size: .small,
