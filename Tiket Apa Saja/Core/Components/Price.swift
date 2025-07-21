@@ -18,12 +18,12 @@ struct Price: View {
     }
     
     var body: some View {
-        VStack(alignment: .leading, spacing:0){
+        VStack(alignment: .leading, spacing: AppSizing.spacing0){
             Text("IDR \(price)")
                 .Label2TextStyle()
                 .foregroundStyle(Color.gray12)
             if haveDiscount{
-                HStack(spacing: 4){
+                HStack(spacing: AppSizing.spacing100){
                     Text("IDR \(priceBeforeDiscount)")
                         .Caption2TextStyle()
                         .strikethrough()

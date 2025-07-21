@@ -37,13 +37,13 @@ struct ProductCard: View {
         Button {
             action()
         } label: {
-            VStack(alignment: .leading, spacing: 0){
+            VStack(alignment: .leading, spacing: AppSizing.spacing0){
                 Image(image)
                     .resizable()
                     .aspectRatio(contentMode: .fill)
-                    .frame(width: 165.5, height: 108)
-                VStack(alignment: .leading, spacing: 16){
-                    VStack(alignment: .leading, spacing: 4){
+                    .frame(width: 166, height: 108)
+                VStack(alignment: .leading, spacing: AppSizing.spacing400){
+                    VStack(alignment: .leading, spacing: AppSizing.spacing100){
                         Text(date)
                             .Caption2TextStyle()
                             .foregroundStyle(Color.gray10)
@@ -62,11 +62,11 @@ struct ProductCard: View {
                         Price(price: price)
                     }
                 }
-                .padding(8)
+                .padding(AppSizing.spacing200)
             }
-            .frame(width: 165.5, height: 238)
+            .frame(width: 166, height: 238)
             .background(Color.gray4)
-            .clipShape(RoundedRectangle(cornerRadius: 8))
+            .clipShape(RoundedRectangle(cornerRadius: AppSizing.spacing200))
         }
     }
 }
