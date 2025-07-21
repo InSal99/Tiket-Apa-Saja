@@ -9,13 +9,13 @@
 
 | Feature / Variation | Preview |
 | ------------------- | ------- |
-| Body Chip           | ![Body chip with text](preview-placeholder) |
-| Filter Chip         | ![Filter chip with icon](preview-placeholder) |
-| Location Chip       | ![Location chip with dropdown](preview-placeholder) |
+| Body Chip           | ![Body chip with text](https://res.cloudinary.com/dacnnk5j4/image/upload/w_200,h_100,c_fit,q_auto,f_auto/v1753066462/Chip-Body-Inactive_ikmppm.png) |
+| Filter Chip         | ![Filter chip with icon](https://res.cloudinary.com/dacnnk5j4/image/upload/w_200,h_100,c_fit,q_auto,f_auto/v1753066462/Chip-Filter_qrblhn.png) |
+| Location Chip       | ![Location chip with icon](https://res.cloudinary.com/dacnnk5j4/image/upload/w_200,h_100,c_fit,q_auto,f_auto/v1753066462/Chip-Location_f5ca2g.png) |
 
-| **Active State** | ![Active chip styling](preview-placeholder) |
+| **Active State** | ![Active chip styling](https://res.cloudinary.com/dacnnk5j4/image/upload/w_200,h_100,c_fit,q_auto,f_auto/v1753066306/Chip-Body-Active_jnuibx.png) |
 | ---------------- | -------------------------------------------- |
-| **Inactive State** | ![Inactive chip styling](preview-placeholder) |
+| **Inactive State** | ![Inactive chip styling](https://res.cloudinary.com/dacnnk5j4/image/upload/w_200,h_100,c_fit,q_auto,f_auto/v1753066462/Chip-Body-Inactive_ikmppm.png) |
 
 ## Overview
 
