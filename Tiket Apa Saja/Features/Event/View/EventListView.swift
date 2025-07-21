@@ -45,38 +45,52 @@ struct EventListView: View {
     ]
     
     fileprivate func footer2Btn() -> some View {
-        return HStack(spacing: 8){
-            TASButton
-                .textOnly(label: "Reset", size: .large, style: .secondary, isDisabled: false, action: {
-                    // Clear both temporary and applied state
-                    selectedFilter.removeAll()
-                    appliedFilter.removeAll()
-                    activeBodyChip = nil
-                    appliedBodyChip = nil
-                    print("Reset - All filters cleared")
-                    if showSheetFilter == true{
-                        showSheetFilter.toggle()
-                    }else if showSheetLocation == true {
-                        showSheetLocation.toggle()
-                    }
-                })
+        return HStack(spacing: AppSizing.spacing200){
+            TASButton(label: "Reset", action: {
+                // Clear both temporary and applied state
+                selectedFilter.removeAll()
+                appliedFilter.removeAll()
+                activeBodyChip = nil
+                appliedBodyChip = nil
+                
+                // Apply the reset filters to viewModel
+                viewModel.applyFilters(appliedFilter)
+                
+                print("Reset - All filters cleared")
+                if showSheetFilter == true{
+                    showSheetFilter.toggle()
+                }else if showSheetLocation == true {
+                    showSheetLocation.toggle()
+                }
+            }, style: .secondary, maxWidth: .infinity)
             
-            TASButton
-                .textOnly(label: "Apply", size: .large, style: .primary, isDisabled: false, action: {
-                    // Apply the temporary selections to the actual filter state
-                    appliedFilter = selectedFilter
-                    appliedBodyChip = activeBodyChip
-                    print("Apply - Applied filters: \(appliedFilter)")
-                    if showSheetFilter == true{
-                        showSheetFilter.toggle()
-                    }else if showSheetLocation == true {
-                        showSheetLocation.toggle()
-                    }
-                })
+            TASButton(label: "Apply", action: {
+                // Apply the temporary selections to the actual filter state
+                appliedFilter = selectedFilter
+                appliedBodyChip = activeBodyChip
+                
+                // Apply filters to viewModel
+                viewModel.applyFilters(appliedFilter)
+                
+                print("Apply - Applied filters: \(appliedFilter)")
+                if showSheetFilter == true{
+                    showSheetFilter.toggle()
+                }else if showSheetLocation == true {
+                    showSheetLocation.toggle()
+                }
+            }, maxWidth: .infinity)
+                
         }
-        .padding(.horizontal, 16)
-        .padding(.top, 16)
-        .padding(.bottom, 12)
+        .padding(.horizontal, AppSizing.spacing400)
+        .padding(.top, AppSizing.spacing400)
+        .padding(.bottom, AppSizing.spacing300)
+        .overlay{
+            Path { path in
+                path.move(to: CGPoint(x: 0, y: 0))
+                path.addLine(to: CGPoint(x: UIScreen.main.bounds.width, y: 0))
+            }
+            .stroke(Color.gray4, lineWidth: AppSizing.borderWidth25)
+        }
     }
     
     private func filterBinding(for location: String) -> Binding<Bool> {
@@ -110,7 +124,7 @@ struct EventListView: View {
     }
     
     private func selectOutsideBodyChip(_ chipName: String) {
-        let bodyChips = ["Upcoming", "Just Announced", "Lowest Price", "Highest Price"]
+        let bodyChips = ["Upcoming", "Just Announced"]
         
         if appliedBodyChip == chipName {
             // Deselect current chip
@@ -133,6 +147,9 @@ struct EventListView: View {
             activeBodyChip = chipName
             selectedFilter.insert(chipName)
         }
+        
+        // Apply filters immediately when chip is selected outside
+        viewModel.applyFilters(appliedFilter)
     }
     
     // Function to sync temporary state with applied state when sheets open
@@ -143,8 +160,8 @@ struct EventListView: View {
 
     
     var body: some View {
-//        NavigationStack {
-            VStack(spacing: 0){
+  //      NavigationStack {
+            VStack(spacing: AppSizing.spacing0){
                 ScrollView(.horizontal, showsIndicators: false) {
                     LazyHStack(spacing: AppSizing.spacing200) {
                         Chip(text: "Filter", isActive: .constant(hasOtherFilters || hasLocationFilters),  action: {
@@ -152,7 +169,7 @@ struct EventListView: View {
                             showSheetFilter.toggle()
                         })
                         .chipType(type: .filter)
-                        Chip(text: "Location",  isActive: .constant(hasLocationFilters), action: {
+                        Chip(text: "All Location",  isActive: .constant(hasLocationFilters), action: {
                             syncTemporaryState()
                             showSheetLocation.toggle()
                         })
@@ -166,11 +183,11 @@ struct EventListView: View {
                         })
                     }
                 }
-                .padding(.vertical, 12)
-                .padding(.horizontal, 16)
+                .padding(.vertical, AppSizing.spacing300)
+                .padding(.horizontal, AppSizing.spacing400)
                 .frame(height: 54)
                 ScrollView {
-                    LazyVGrid(columns: columns, spacing: 16) {
+                    LazyVGrid(columns: columns, spacing: AppSizing.spacing300) {
                         ForEach(viewModel.events) { event in
                             ProductCard(
                                 image: event.image,
@@ -184,7 +201,8 @@ struct EventListView: View {
                             )
                         }
                     }
-                    .padding(.horizontal, 16)
+                    .padding(.horizontal, AppSizing.spacing400)
+                    .padding(.vertical, AppSizing.spacing400)
                 }
             }
             .background(Color.gray2)
@@ -227,25 +245,25 @@ struct EventListView: View {
             ZStack {
                 Color.gray3.ignoresSafeArea()
                 
-                VStack(spacing: 12){
-                    HStack(spacing: 0){
+                VStack(spacing: AppSizing.spacing300){
+                    HStack(spacing: AppSizing.spacing0){
                         Text("Filter")
                             .Subtitle1TextStyle()
                             .foregroundStyle(Color.gray12)
-                            .padding(.horizontal, 16)
-                            .padding(.vertical, 8)
+                            .padding(.horizontal, AppSizing.spacing400)
+                            .padding(.vertical, AppSizing.spacing200)
                         Spacer()
                     }
                     
                     ScrollView(.vertical, showsIndicators: false){
-                        VStack(alignment: .leading, spacing: 24){
-                            VStack(alignment: .leading, spacing: 12){
+                        VStack(alignment: .leading, spacing: AppSizing.spacing600){
+                            VStack(alignment: .leading, spacing: AppSizing.spacing300){
                                 Text("Sort By")
                                     .Subtitle2TextStyle()
                                     .foregroundStyle(Color.gray12)
                                 
-                                VStack(alignment: .leading, spacing: 8){
-                                    HStack(alignment: .top, spacing: 8){
+                                VStack(alignment: .leading, spacing: AppSizing.spacing200){
+                                    HStack(alignment: .top, spacing: AppSizing.spacing200){
                                         Chip(text: "Upcoming", isActive: .constant(activeBodyChip == "Upcoming"), action: {
                                             selectBodyChip("Upcoming")
                                         })
@@ -253,7 +271,7 @@ struct EventListView: View {
                                             selectBodyChip("Just Announced")
                                         })
                                     }
-                                    HStack(alignment: .top, spacing: 8){
+                                    HStack(alignment: .top, spacing: AppSizing.spacing200){
                                         Chip(text: "Lowest Price", isActive: .constant(activeBodyChip == "Lowest Price"), action: {
                                             selectBodyChip("Lowest Price")
                                         })
@@ -262,14 +280,14 @@ struct EventListView: View {
                                         })
                                     }
                                 }
-                            }.padding(.horizontal, 16)
+                            }.padding(.horizontal, AppSizing.spacing400)
                             
-                            VStack(alignment: .leading, spacing: 12){
+                            VStack(alignment: .leading, spacing: AppSizing.spacing300){
                                 Text("Location")
                                     .Subtitle2TextStyle()
                                     .foregroundStyle(Color.gray12)
                                 
-                                VStack(alignment: .leading, spacing: 0){
+                                VStack(alignment: .leading, spacing: AppSizing.spacing0){
                                     Checkbox(isActive: filterBinding(for: "Balikpapan")).showLabel(label: "Balikpapan")
                                     Checkbox(isActive: filterBinding(for: "Surabaya")).showLabel(label: "Surabaya")
                                     Checkbox(isActive: filterBinding(for: "Jakarta")).showLabel(label: "Jakarta")
@@ -277,54 +295,54 @@ struct EventListView: View {
                                     Checkbox(isActive: filterBinding(for: "Bali")).showLabel(label: "Bali")
                                     Checkbox(isActive: filterBinding(for: "Blitar")).showLabel(label: "Blitar")
                                 }
-                            }.padding(.horizontal, 16)
+                            }.padding(.horizontal, AppSizing.spacing400)
                             
-                            VStack(alignment: .leading, spacing: 12){
+                            VStack(alignment: .leading, spacing: AppSizing.spacing300){
                                 Text("Category")
                                     .Subtitle2TextStyle()
                                     .foregroundStyle(Color.gray12)
                                 
-                                VStack(alignment: .leading, spacing: 0){
+                                VStack(alignment: .leading, spacing: AppSizing.spacing0){
                                     Checkbox(isActive: filterBinding(for: "Musical")).showLabel(label: "Musical")
                                     Checkbox(isActive: filterBinding(for: "Concert")).showLabel(label: "Concert")
                                     Checkbox(isActive: filterBinding(for: "Orchestra")).showLabel(label: "Orchestra")
                                 }
-                            }.padding(.horizontal, 16)
+                            }.padding(.horizontal, AppSizing.spacing400)
                             
-                            VStack(alignment: .leading, spacing: 12){
+                            VStack(alignment: .leading, spacing: AppSizing.spacing300){
                                 Text("Type")
                                     .Subtitle2TextStyle()
                                     .foregroundStyle(Color.gray12)
                                 
-                                VStack(alignment: .leading, spacing: 0){
+                                VStack(alignment: .leading, spacing: AppSizing.spacing0){
                                     Checkbox(isActive: filterBinding(for: "Musical")).showLabel(label: "Musical")
                                     Checkbox(isActive: filterBinding(for: "Concert")).showLabel(label: "Concert")
                                     Checkbox(isActive: filterBinding(for: "Orchestra")).showLabel(label: "Orchestra")
                                 }
-                            }.padding(.horizontal, 16)
+                            }.padding(.horizontal, AppSizing.spacing400)
                         }
                     }
                     footer2Btn()
                 }
-                .padding(.top, 20)
+                .padding(.top, AppSizing.spacing500)
             }
-            .presentationDetents([.large])
+            .presentationDetents([.fraction(0.5), .fraction(0.999)])
             .presentationDragIndicator(.visible)
-            .presentationCornerRadius(16)
+            .presentationCornerRadius(AppSizing.borderRadius400)
         }
         .sheet(isPresented: $showSheetLocation) {
             ZStack {
                 Color.gray3.ignoresSafeArea()
                 
-                VStack(spacing: 0){
-                    VStack(alignment: .leading, spacing: 12){
+                VStack(spacing: AppSizing.spacing0){
+                    VStack(alignment: .leading, spacing: AppSizing.spacing300){
                         Text("All Location")
                             .Subtitle1TextStyle()
                             .foregroundStyle(Color.gray12)
-                            .padding(.horizontal, 16)
-                            .padding(.top, 8)
+                            .padding(.horizontal, AppSizing.spacing400)
+                            .padding(.top, AppSizing.spacing200)
                         
-                        VStack(alignment: .leading, spacing: 0){
+                        VStack(alignment: .leading, spacing: AppSizing.spacing0){
                             Checkbox(isActive: filterBinding(for: "Balikpapan")).showLabel(label: "Balikpapan")
                             Checkbox(isActive: filterBinding(for: "Surabaya")).showLabel(label: "Surabaya")
                             Checkbox(isActive: filterBinding(for: "Jakarta")).showLabel(label: "Jakarta")
@@ -332,17 +350,17 @@ struct EventListView: View {
                             Checkbox(isActive: filterBinding(for: "Bali")).showLabel(label: "Bali")
                             Checkbox(isActive: filterBinding(for: "Blitar")).showLabel(label: "Blitar")
                         }
-                        .padding(.horizontal, 16)
+                        .padding(.horizontal, AppSizing.spacing400)
                     }
                     Spacer()
                     footer2Btn()
                 }
-                .padding(.top, 20)
+                .padding(.top, AppSizing.spacing500)
                 
             }
             .presentationDetents([.fraction(0.5)])
             .presentationDragIndicator(.visible)
-            .presentationCornerRadius(16)
+            .presentationCornerRadius(AppSizing.borderRadius400)
         }
         .navigationBarBackButtonHidden(true)
     }

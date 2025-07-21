@@ -19,7 +19,7 @@ struct Checkbox: View {
     }
     
     var body: some View {
-        HStack(alignment: .center, spacing: 0){
+        HStack(alignment: .center, spacing: AppSizing.spacing0){
             if haveLabel{
                 Text(label)
                     .Body2TextStyle()
@@ -47,7 +47,7 @@ struct Checkbox: View {
             }
 
         }
-        .padding(.vertical, 4)
+        .padding(.vertical, AppSizing.spacing100)
         .foregroundStyle(Color.gray11)
     }
 }

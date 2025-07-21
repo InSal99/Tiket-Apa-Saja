@@ -29,7 +29,7 @@ struct Chip: View {
     
     var body: some View {
         Button {
-            withAnimation (.spring(duration: 0.2, bounce: 0.5)) {
+            withAnimation (.spring(duration: 0.5, bounce: 0.5)) {
                 if type == .body {
                     // Let the parent handle the state change
                 } else {
@@ -38,7 +38,7 @@ struct Chip: View {
             }
             action()
         } label: {
-            VStack(alignment: .leading, spacing: 0){
+            VStack(alignment: .leading, spacing: AppSizing.spacing0){
                 if(type == .body){
                     Text(text)
                         .Body2TextStyle()
@@ -49,7 +49,7 @@ struct Chip: View {
                         .frame(width: 18, height: 18)
                         .aspectRatio(1, contentMode: .fill)
                 }else if(type == .location){
-                    HStack(alignment: .center, spacing: 4){
+                    HStack(alignment: .center, spacing: AppSizing.spacing100){
                         Text("All Location")
                             .Body2TextStyle()
                         Image("icon-chevron-down")
@@ -61,11 +61,11 @@ struct Chip: View {
                 }
             }
             .foregroundStyle(isActive ? Color.orange9 : Color.gray11)
-            .padding(.horizontal, 12)
-            .padding(.vertical, 6)
+            .padding(.horizontal, AppSizing.spacing300)
+            .padding(.vertical, AppSizing.spacing150)
             .background(
                 Capsule()
-                    .stroke(isActive ? Color.orange10 : Color.gray5, lineWidth: 1)
+                    .stroke(isActive ? Color.orange10 : Color.gray5, lineWidth: AppSizing.borderWidth25)
                     .fill(isActive ? Color.orange4 : Color.clear)
             )
             .clipShape(Capsule())
@@ -82,5 +82,5 @@ extension Chip {
 }
 
 #Preview {
-    Chip(text: "Upcoming", isActive: .constant(true), action: {}).chipType(type: .location)
+    Chip(text: "Upcoming", isActive: .constant(true), action: {}).chipType(type: .body)
 }
