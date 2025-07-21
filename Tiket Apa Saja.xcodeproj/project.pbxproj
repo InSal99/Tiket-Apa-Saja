@@ -29,9 +29,33 @@
 		16B171F62E1630CC000798E2 /* Tiket Apa SajaUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Tiket Apa SajaUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		9BB0A1F92E2DDBDF005A8F1B /* Exceptions for "Tiket Apa Saja" folder in "Tiket Apa Saja" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Core/Documentation/ChipDocs.md,
+			);
+			target = 16B171DE2E1630CA000798E2 /* Tiket Apa Saja */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
+/* Begin PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
+		9BB0A1FA2E2DDBDF005A8F1B /* Exceptions for "Tiket Apa Saja" folder in "Compile Sources" phase from "Tiket Apa Saja" target */ = {
+			isa = PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet;
+			buildPhase = 16B171DB2E1630CA000798E2 /* Sources */;
+			membershipExceptions = (
+				Core/Documentation/ChipDocs.md,
+			);
+		};
+/* End PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		16B171E12E1630CA000798E2 /* Tiket Apa Saja */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				9BB0A1F92E2DDBDF005A8F1B /* Exceptions for "Tiket Apa Saja" folder in "Tiket Apa Saja" target */,
+				9BB0A1FA2E2DDBDF005A8F1B /* Exceptions for "Tiket Apa Saja" folder in "Compile Sources" phase from "Tiket Apa Saja" target */,
+			);
 			path = "Tiket Apa Saja";
 			sourceTree = "<group>";
 		};
