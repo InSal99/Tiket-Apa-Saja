@@ -14,7 +14,7 @@
 
 ## Preview
 
-![HPTL](https://res.cloudinary.com/dr6cm6n5f/image/upload/v1737442931/hometablayout-ezgif.com-video-to-gif-converter_cjljyk.gif)
+![HPTL](https://res.cloudinary.com/dpdbzlnhr/image/upload/c_scale,w_500/v1753066429/searchbar-preview_ha8bsw.gif)
 
 ## Usage
 
@@ -22,8 +22,8 @@
 
 ```swift
 TASSearchBar(
-    placeholders: ["Search products...", "Find brands...", "Look for deals..."],
-    prefix: "🔍 "
+    placeholders: ["Snacks", "Drinks", "Foods"],
+    prefix: "Search "
 )
 ```
 
@@ -31,7 +31,7 @@ TASSearchBar(
 
 ```swift
 TASSearchBar(
-    placeholders: ["Search products...", "Find brands...", "Look for deals..."],
+    placeholders: ["Snacks", "Drinks", "Foods"],
     onSearchAction: { searchText in
         // Handle search action
         performSearch(with: searchText)
@@ -42,20 +42,11 @@ TASSearchBar(
 
 ## Parameters
 
-| Parameter | Type | Default | Description |
+| Parameter | Type | Required | Description |
 |-----------|------|---------|-------------|
-| `placeholders` | `[String]` | Required | Array of placeholder strings to animate through |
-| `onSearchAction` | `((String) -> Void)?` | `nil` | Optional callback triggered when search is submitted |
-| `prefix` | `String` | Required | Text prefix displayed before the animated placeholder |
-
-## State Properties
-
-| Property | Type | Access | Description |
-|----------|------|--------|-------------|
-| `text` | `String` | `@State` | The current text input value |
-| `isAnimating` | `Bool` | `@State private` | Controls the animation state |
-| `animatedPlaceholder` | `String` | `@State private` | The currently displayed animated placeholder text |
-| `currentWordIndex` | `Int` | `@State private` | Index of the current placeholder being animated |
+| `placeholders` | `[String]` | ✅ | Array of placeholder strings to animate through |
+| `onSearchAction` | `((String) -> Void)?` | ❌ | Optional callback triggered when search is submitted |
+| `prefix` | `String` | ✅ | Text prefix displayed before the animated placeholder |
 
 ## Animation Behavior
 
@@ -83,17 +74,12 @@ struct ContentView: View {
     var body: some View {
         VStack {
             TASSearchBar(
-                placeholders: [
-                    "Search for products",
-                    "Find your favorite brands",
-                    "Discover new items",
-                    "Look for deals"
-                ],
+                placeholders: [["Snacks", "Drinks", "Foods"],
                 onSearchAction: { searchQuery in
                     print("Searching for: \(searchQuery)")
                     // Implement search logic here
                 },
-                prefix: "🔍 "
+                prefix: "Search "
             )
             .padding()
             

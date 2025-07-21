@@ -12,7 +12,8 @@ struct Tiket_Apa_SajaApp: App {
     var body: some Scene {
         WindowGroup {
 //            EventListView()
-            ContentView()
+//            ContentView()
+            TASBadgedIcon(iconName: "notifications", showBadge: true, action: {})
         }
     }
 }

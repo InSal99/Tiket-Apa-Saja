@@ -14,7 +14,10 @@
 
 ## Preview
 
-![HPTL](https://res.cloudinary.com/dr6cm6n5f/image/upload/v1737442931/hometablayout-ezgif.com-video-to-gif-converter_cjljyk.gif)
+| Type | Preview |
+|---------|---------|
+| **With Badge** | ![HPTL](https://res.cloudinary.com/dpdbzlnhr/image/upload/c_scale,w_50/v1753068376/icon-with-badge_llqd1r.png) |
+| **Without Badge** | ![HPTL](https://res.cloudinary.com/dpdbzlnhr/image/upload/c_scale,w_50/v1753068376/icon-without-badge_ju64sn.png) |
 
 ## Usage
 
