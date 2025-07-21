@@ -29,7 +29,7 @@ struct Chip: View {
     
     var body: some View {
         Button {
-            withAnimation (.spring(duration: 0.2, bounce: 0.5)) {
+            withAnimation (.spring(duration: 0.5, bounce: 0.5)) {
                 if type == .body {
                     // Let the parent handle the state change
                 } else {
@@ -82,5 +82,5 @@ extension Chip {
 }
 
 #Preview {
-    Chip(text: "Upcoming", isActive: .constant(true), action: {}).chipType(type: .location)
+    Chip(text: "Upcoming", isActive: .constant(true), action: {}).chipType(type: .body)
 }

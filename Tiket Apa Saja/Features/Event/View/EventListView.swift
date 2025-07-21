@@ -50,6 +50,10 @@ struct EventListView: View {
                 appliedFilter.removeAll()
                 activeBodyChip = nil
                 appliedBodyChip = nil
+                
+                // Apply the reset filters to viewModel
+                viewModel.applyFilters(appliedFilter)
+                
                 print("Reset - All filters cleared")
                 if showSheetFilter == true{
                     showSheetFilter.toggle()
@@ -62,6 +66,10 @@ struct EventListView: View {
                 // Apply the temporary selections to the actual filter state
                 appliedFilter = selectedFilter
                 appliedBodyChip = activeBodyChip
+                
+                // Apply filters to viewModel
+                viewModel.applyFilters(appliedFilter)
+                
                 print("Apply - Applied filters: \(appliedFilter)")
                 if showSheetFilter == true{
                     showSheetFilter.toggle()
@@ -114,7 +122,7 @@ struct EventListView: View {
     }
     
     private func selectOutsideBodyChip(_ chipName: String) {
-        let bodyChips = ["Upcoming", "Just Announced", "Lowest Price", "Highest Price"]
+        let bodyChips = ["Upcoming", "Just Announced"]
         
         if appliedBodyChip == chipName {
             // Deselect current chip
@@ -137,6 +145,9 @@ struct EventListView: View {
             activeBodyChip = chipName
             selectedFilter.insert(chipName)
         }
+        
+        // Apply filters immediately when chip is selected outside
+        viewModel.applyFilters(appliedFilter)
     }
     
     // Function to sync temporary state with applied state when sheets open
@@ -156,7 +167,7 @@ struct EventListView: View {
                             showSheetFilter.toggle()
                         })
                         .chipType(type: .filter)
-                        Chip(text: "Location",  isActive: .constant(hasLocationFilters), action: {
+                        Chip(text: "All Location",  isActive: .constant(hasLocationFilters), action: {
                             syncTemporaryState()
                             showSheetLocation.toggle()
                         })
