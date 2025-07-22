@@ -17,7 +17,7 @@ class HomeViewModel: ObservableObject {
     @Published var searchText: String = ""
     
     let locationName: String = "Jakarta"
-    let promos: [String] = ["banner1", "banner1", "banner1", "banner1", "banner1"]
+    let promos: [String] = ["banner1", "banner2", "banner3", "banner4", "banner5"]
     
     func handleCategorySelection(_ category: Category) {
         categoryViewModel.selectCategory(category)

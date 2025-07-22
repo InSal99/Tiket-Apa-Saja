@@ -27,12 +27,32 @@ struct EventDetailView: View {
             }
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    BadgedIcon(iconName: "chevron-left", showBadge: false, action: { navigationPath.removeLast() })
+                    Button {
+                        withAnimation(.interactiveSpring(response: 0.4, dampingFraction: 0.8)) {
+                            navigationPath.removeLast()
+                        }
+                    } label: {
+                        Image("chevron-left")
+                            .resizable()
+                            .renderingMode(.template)
+                            .frame(width: 24, height: 24)
+                            .foregroundColor(.gray10)
+                    }
                 }
                 
                 ToolbarItemGroup(placement: .topBarTrailing) {
                     HStack(alignment: .center, spacing: AppSizing.spacing300) {
-                        BadgedIcon(iconName: "share", showBadge: false, action: { print("Share Event") })
+                        Button {
+                            withAnimation(.interactiveSpring(response: 0.4, dampingFraction: 0.8)) {
+                                print("Share Event")
+                            }
+                        } label: {
+                            Image("share")
+                                .resizable()
+                                .renderingMode(.template)
+                                .frame(width: 24, height: 24)
+                                .foregroundColor(.gray10)
+                        }
 
                         Button {
                             print("Bookmark")

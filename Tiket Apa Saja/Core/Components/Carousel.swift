@@ -56,12 +56,9 @@ struct Carousel: View {
             
             HStack(spacing: AppSizing.spacing150) {
                 ForEach(images.indices, id: \.self) { index in
-                    DotIndicator(
-                        index: index,
-                        currentIndex: currentIndex,
-                        dragOffset: dragOffset,
-                        totalImages: images.count
-                    )
+                    Capsule()
+                        .fill(index == currentIndex ? .baseWhite : .gray1)
+                        .frame(width: index == currentIndex ? 12 : 4, height: 4)
                 }
             }
             .padding(.bottom, AppSizing.spacing100)
@@ -77,7 +74,7 @@ struct Carousel: View {
         autoScrollTimer = Timer.scheduledTimer(withTimeInterval: interval, repeats: true) { _ in
             guard images.count > 1 else { cancelAutoScroll(); return }
             
-            withAnimation(.smooth(duration: 0.5)) {
+            withAnimation(.smooth(duration: 0.8)) {
                 currentIndex = (currentIndex + 1) % images.count
             }
         }
@@ -89,6 +86,74 @@ struct Carousel: View {
     }
 }
 
+//struct DotIndicator: View {
+//    let index: Int
+//    let currentIndex: Int
+//    let dragOffset: CGFloat
+//    let totalImages: Int
+//    
+//    private var dotWidth: CGFloat {
+//        let isActive = index == currentIndex
+//        
+//        guard abs(dragOffset) > 10 else {
+//            return isActive ? 12 : 4
+//        }
+//        
+//        let screenWidth = UIScreen.main.bounds.width
+//        let dragProgress = min(1.0, abs(dragOffset) / (screenWidth * 0.4))
+//        
+//        let nextIndex: Int
+//        if dragOffset > 0 {
+//            nextIndex = currentIndex > 0 ? currentIndex - 1 : totalImages - 1
+//        } else {
+//            nextIndex = currentIndex < totalImages - 1 ? currentIndex + 1 : 0
+//        }
+//        
+//        let isNext = index == nextIndex
+//        
+//        if isActive {
+//            return 12 - (dragProgress * 8)
+//        } else if isNext {
+//            return 4 + (dragProgress * 8)
+//        } else {
+//            return 4
+//        }
+//    }
+//    
+//    private var dotColor: Color {
+//        let isActive = index == currentIndex
+//        
+//        // Only change color if we're actively dragging
+//        guard abs(dragOffset) > 10 else {
+//            return isActive ? .baseWhite : .gray1
+//        }
+//        
+//        let screenWidth = UIScreen.main.bounds.width
+//        let dragProgress = abs(dragOffset) / (screenWidth * 0.4)
+//        
+//        // Determine next index based on drag direction
+//        let nextIndex: Int
+//        if dragOffset > 0 {
+//            nextIndex = currentIndex > 0 ? currentIndex - 1 : totalImages - 1
+//        } else {
+//            nextIndex = currentIndex < totalImages - 1 ? currentIndex + 1 : 0
+//        }
+//        
+//        let isNext = index == nextIndex
+//        
+//        return (isActive || (isNext && dragProgress > 0.4)) ? .baseWhite : .gray1
+//    }
+//    
+//    var body: some View {
+//        Capsule()
+//            .fill(dotColor)
+//            .frame(width: dotWidth, height: 4)
+//            .animation(.interactiveSpring(response: 0.4, dampingFraction: 0.8), value: dotWidth)
+//            .animation(.interactiveSpring(response: 0.4, dampingFraction: 0.8), value: dotColor)
+//    }
+//}
+
+
 struct DotIndicator: View {
     let index: Int
     let currentIndex: Int
@@ -98,26 +163,19 @@ struct DotIndicator: View {
     private var dotWidth: CGFloat {
         let isActive = index == currentIndex
         
-        guard abs(dragOffset) > 10 else {
+        // Only animate if we're actively dragging
+        guard dragOffset != 0 else {
             return isActive ? 12 : 4
         }
         
-        let screenWidth = UIScreen.main.bounds.width
-        let dragProgress = min(1.0, abs(dragOffset) / (screenWidth * 0.4))
-        
-        let nextIndex: Int
-        if dragOffset > 0 {
-            nextIndex = currentIndex > 0 ? currentIndex - 1 : totalImages - 1
-        } else {
-            nextIndex = currentIndex < totalImages - 1 ? currentIndex + 1 : 0
-        }
-        
+        let dragProgress = min(1.0, abs(dragOffset) / (UIScreen.main.bounds.width * 0.3))
+        let nextIndex = dragOffset < 0 ? min(totalImages - 1, currentIndex + 1) : max(0, currentIndex - 1)
         let isNext = index == nextIndex
         
         if isActive {
-            return 12 - (dragProgress * 8)
+            return 12 - (dragProgress * 8) // Shrink from 12 to 4
         } else if isNext {
-            return 4 + (dragProgress * 8)
+            return 4 + (dragProgress * 8) // Grow from 4 to 12
         } else {
             return 4
         }
@@ -127,32 +185,23 @@ struct DotIndicator: View {
         let isActive = index == currentIndex
         
         // Only change color if we're actively dragging
-        guard abs(dragOffset) > 10 else {
+        guard dragOffset != 0 else {
             return isActive ? .baseWhite : .gray1
         }
         
-        let screenWidth = UIScreen.main.bounds.width
-        let dragProgress = abs(dragOffset) / (screenWidth * 0.4)
-        
-        // Determine next index based on drag direction
-        let nextIndex: Int
-        if dragOffset > 0 {
-            nextIndex = currentIndex > 0 ? currentIndex - 1 : totalImages - 1
-        } else {
-            nextIndex = currentIndex < totalImages - 1 ? currentIndex + 1 : 0
-        }
-        
+        let dragProgress = abs(dragOffset) / (UIScreen.main.bounds.width * 0.3)
+        let nextIndex = dragOffset < 0 ? min(totalImages - 1, currentIndex + 1) : max(0, currentIndex - 1)
         let isNext = index == nextIndex
         
-        return (isActive || (isNext && dragProgress > 0.4)) ? .baseWhite : .gray1
+        return (isActive || (isNext && dragProgress > 0.5)) ? .baseWhite : .gray1
     }
     
     var body: some View {
         Capsule()
             .fill(dotColor)
             .frame(width: dotWidth, height: 4)
-            .animation(.interactiveSpring(response: 0.4, dampingFraction: 0.8), value: dotWidth)
-            .animation(.interactiveSpring(response: 0.4, dampingFraction: 0.8), value: dotColor)
+            .animation(.easeInOut(duration: 0.5), value: dotWidth)
+            .animation(.easeInOut(duration: 0.5), value: dotColor)
     }
 }
 
@@ -464,5 +513,5 @@ struct DotIndicator: View {
 //}
 
 #Preview {
-    Carousel(images: ["banner1", "banner1", "banner1", "banner1"])
+    Carousel(images: ["banner1", "banner2", "banner3", "banner4"])
 }

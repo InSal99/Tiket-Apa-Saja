@@ -16,10 +16,9 @@ class EntertainmentViewModel: ObservableObject {
     
     private func loadEntertainments() {
         entertainments = [
-            Entertainment(icon: "banner1", isSubscribed: false),
-            Entertainment(icon: "banner1", isSubscribed: true),
-            Entertainment(icon: "banner1", isSubscribed: false),
-            Entertainment(icon: "banner1", isSubscribed: false)
+            Entertainment(icon: "entertainment1", isSubscribed: false),
+            Entertainment(icon: "entertainment2", isSubscribed: true),
+            Entertainment(icon: "entertainment3", isSubscribed: false),
         ]
     }
     

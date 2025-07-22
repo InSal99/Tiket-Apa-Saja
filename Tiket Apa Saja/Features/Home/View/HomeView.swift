@@ -12,17 +12,6 @@ struct HomeView: View {
     @Binding var navigationPath: NavigationPath
     
     var body: some View {
-            VStack(alignment: .leading, spacing: AppSizing.spacing0) {
-    
-                TopAppBarView(
-                    text: $homeViewModel.searchText,
-                    locationName: homeViewModel.locationName
-                )
-                
-                Divider()
-                    .frame(height: AppSizing.borderWidth25)
-                    .background(.gray4)
-                
                 ScrollView {
                     VStack {
                         HeroCarouselView(promos: homeViewModel.promos)
@@ -39,13 +28,20 @@ struct HomeView: View {
                         )
                     }
                 }
-            }
             .background(.gray1)
             .onChange(of: homeViewModel.navigateToCategory) {_, category in
                 if let category = category, category.label == "Event" {
                     homeViewModel.navigateToCategory = nil
                     navigationPath.append(category)
                 }
+            }
+            .navigationBarHidden(true)
+            .safeAreaInset(edge: .top, spacing: AppSizing.spacing0) {
+                TopAppBarView(
+                    text: $homeViewModel.searchText,
+                    locationName: homeViewModel.locationName
+                )
+                .background(.ultraThinMaterial)
             }
     }
 }
@@ -89,6 +85,10 @@ struct TopAppBarView: View {
             .padding(.top, AppSizing.spacing150)
             .padding(.horizontal, AppSizing.spacing400)
             .padding(.bottom, AppSizing.borderRadius300)
+            
+            Divider()
+                .frame(height: AppSizing.borderWidth25)
+                .background(.gray4)
         }
         .background(.gray3)
     }
