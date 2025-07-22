@@ -15,63 +15,81 @@ struct EventDetailView: View {
     var eventViewModel: EventViewModel = EventViewModel()
     
     var body: some View {
-            ScrollView(showsIndicators: false) {
-                VStack {
-                    ProductImageView(image: event.image)
-                    ProductInfoView(title: event.title, date: event.formatEventDate(from: event.eventDate), time: event.time, location: event.city)
-                    EventTicketView(tickets: event.tickets)
-                    EventDescriptionView()
-                    EventLocationView(eventLocation: event.location)
-                    EventSimilarView(events: eventViewModel.events)
+        ScrollView(showsIndicators: false) {
+            VStack {
+                ProductImageView(image: event.image)
+                ProductInfoView(title: event.title, date: event.formatEventDate(from: event.eventDate), time: event.time, location: event.city)
+                EventTicketView(tickets: event.tickets)
+                EventDescriptionView()
+                EventLocationView(eventLocation: event.location)
+                EventSimilarView(navigationPath: $navigationPath, events: eventViewModel.events)
+            }
+        }
+        .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                Button {
+                    withAnimation(.interactiveSpring(response: 0.4, dampingFraction: 0.8)) {
+                        navigationPath.removeLast()
+                    }
+                } label: {
+                    Image("chevron-left")
+                        .resizable()
+                        .renderingMode(.template)
+                        .frame(width: 24, height: 24)
+                        .foregroundColor(.gray10)
                 }
             }
-            .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
+            
+            ToolbarItemGroup(placement: .topBarTrailing) {
+                HStack(alignment: .center, spacing: AppSizing.spacing300) {
                     Button {
+                        handleShare()
                         withAnimation(.interactiveSpring(response: 0.4, dampingFraction: 0.8)) {
-                            navigationPath.removeLast()
+                            print("Share Event")
+                            print("Shared event: \(event.id)")
                         }
                     } label: {
-                        Image("chevron-left")
+                        Image("share")
                             .resizable()
                             .renderingMode(.template)
                             .frame(width: 24, height: 24)
                             .foregroundColor(.gray10)
                     }
-                }
-                
-                ToolbarItemGroup(placement: .topBarTrailing) {
-                    HStack(alignment: .center, spacing: AppSizing.spacing300) {
-                        Button {
-                            withAnimation(.interactiveSpring(response: 0.4, dampingFraction: 0.8)) {
-                                print("Share Event")
-                            }
-                        } label: {
-                            Image("share")
-                                .resizable()
-                                .renderingMode(.template)
-                                .frame(width: 24, height: 24)
-                                .foregroundColor(.gray10)
+                    
+                    Button {
+                        print("Bookmark")
+                        withAnimation(.interactiveSpring(response: 0.4, dampingFraction: 0.8)) {
+                            isEventBookmarked.toggle()
+                            print(event.id)
                         }
-
-                        Button {
-                            print("Bookmark")
-                            withAnimation(.interactiveSpring(response: 0.4, dampingFraction: 0.8)) {
-                                isEventBookmarked.toggle()
-                            }
-                        } label: {
-                            Image(isEventBookmarked ? "bookmark-added" : "bookmark-add")
-                                .resizable()
-                                .renderingMode(.template)
-                                .frame(width: 24, height: 24)
-                                .foregroundColor(isEventBookmarked ? .orange9 : .gray10)
-                        }
+                    } label: {
+                        Image(isEventBookmarked ? "bookmark-added" : "bookmark-add")
+                            .resizable()
+                            .renderingMode(.template)
+                            .frame(width: 24, height: 24)
+                            .foregroundColor(isEventBookmarked ? .orange9 : .gray10)
                     }
                 }
             }
-            .background(.gray1)
-            .toolbarBackground(.gray1)
-            .navigationBarBackButtonHidden(true)
+        }
+        .background(.gray1)
+        .toolbarBackground(.gray1)
+        .navigationBarBackButtonHidden(true)
+    }
+    
+    private func handleShare() {
+        let eventID = event.id.uuidString
+        guard let url = URL(string: "tiketapasaja://events/\(eventID)") else { return }
+        
+        let activityVC = UIActivityViewController(
+            activityItems: [url],
+            applicationActivities: nil
+        )
+        
+        if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+           let rootViewController = windowScene.windows.first?.rootViewController {
+            rootViewController.present(activityVC, animated: true)
+        }
     }
 }
 
@@ -287,6 +305,7 @@ struct EventLocationView: View {
 }
 
 struct EventSimilarView: View {
+    @Binding var navigationPath: NavigationPath
     let events: [Event]
     
     var body: some View {
@@ -299,7 +318,20 @@ struct EventSimilarView: View {
             ScrollView(.horizontal, showsIndicators: false) {
                 LazyHStack(alignment: .top, spacing: AppSizing.spacing200) {
                     ForEach(events) { item in
-                        ProductCard(image: item.image, date: item.date, title: item.title, location: item.city, price: item.lowestPrice, haveDiscount: item.discountPercentage != 0, discountPercentage: item.discountPercentage, action: { print(item.title) })
+                        ProductCard(
+                            image: item.image,
+                            date: item.date,
+                            title: item.title,
+                            location: item.city,
+                            price: item.lowestPrice,
+                            haveDiscount: item.discountPercentage != 0,
+                            discountPercentage: item.discountPercentage,
+                            action: {
+                                print(item.title)
+                                print("Go to \(item.title) detail")
+                                navigationPath.append(item)
+                            }
+                        )
                     }
                 }
                 .padding(.horizontal, AppSizing.spacing400)
@@ -308,6 +340,9 @@ struct EventSimilarView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(.vertical, AppSizing.spacing400)
         .background(.gray2)
+        .navigationDestination(for: Event.self) { event in
+            EventDetailView(navigationPath: $navigationPath, event: event)
+        }
     }
 }
 

@@ -10,6 +10,7 @@ import SwiftUI
 struct ContentView: View {
     @State private var selectedTab: BottomAppBar.Tab = .home
     @State private var navigationPath = NavigationPath()
+    @StateObject private var eventViewModel = EventViewModel()
     
     var body: some View {
         NavigationStack(path: $navigationPath) {
@@ -34,7 +35,34 @@ struct ContentView: View {
                     EventListView(navigationPath: $navigationPath)
                 }
             }
+            .navigationDestination(for: Event.self) { event in
+                EventDetailView(navigationPath: $navigationPath, event: event)
+            }
+            .navigationDestination(for: UUID.self) { eventID in
+                if let event = eventViewModel.getEvent(by: eventID) {
+                    EventDetailView(navigationPath: $navigationPath, event: event)
+                } else {
+                    Text("Event not found")
+                        .onAppear {
+                            // Fallback to home if event not found
+                            navigationPath.removeLast()
+                        }
+                }
+            }
+            .onOpenURL { url in
+                handleDeepLink(url: url)
+            }
         }
+    }
+    
+    private func handleDeepLink(url: URL) {
+        guard url.scheme == "tiketapasaja",
+              url.pathComponents.count >= 3,
+              url.pathComponents[1] == "events",
+              let eventID = UUID(uuidString: url.pathComponents[2])
+        else { return }
+        
+        navigationPath.append(eventID)
     }
 }
 

@@ -1,8 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "stardew-valley-festival-of-seasons.png",
-      "idiom" : "universal"
+      "filename" : "product-stardew-valley-festival-of-seasons.png",
+      "idiom" : "universal",
+      "scale" : "1x"
+    },
+    {
+      "idiom" : "universal",
+      "scale" : "2x"
+    },
+    {
+      "idiom" : "universal",
+      "scale" : "3x"
     }
   ],
   "info" : {

@@ -17,6 +17,10 @@ class EventViewModel: ObservableObject {
         loadEvents()
     }
     
+    func getEvent(by id: UUID) -> Event? {
+        return events.first { $0.id == id }
+    }
+    
     public func count() -> Int {
         return self.filteredEvents.count
     }
@@ -72,30 +76,135 @@ class EventViewModel: ObservableObject {
     
     private func loadEvents() {
         let sampleTickets = [
-            Tickets(Name: "Early Bird - Steel", description: "This ticket is non-refundable and special standing area", price: 1150000, quota: 100),
-            Tickets(Name: "Early Bird - Gold", description: "This ticket is non-refundable and special standing area", price: 1380000, quota: 100),
-            Tickets(Name: "Early Bird - Iridium", description: "This ticket is non-refundable and special standing area", price: 1610000, quota: 100),
-            Tickets(Name: "Early Bird - Wood", description: "This ticket is non-refundable and special standing area", price: 805000, quota: 100),
-            Tickets(Name: "Early Bird - Copper", description: "This ticket is non-refundable and special standing area", price: 977500, quota: 100),
+            Tickets(
+                Name: "Early Bird - Steel",
+                description: "Non-refundable standing area ticket with basic amenities. Includes access to main event area but no seating. Food and drinks available for purchase.",
+                price: 1_150_000,
+                quota: 250
+            ),
+            Tickets(
+                Name: "Early Bird - Gold",
+                description: "Non-refundable ticket with access to premium standing area closer to stage. Includes complimentary welcome drink and event merchandise.",
+                price: 1_380_000,
+                quota: 0
+            ),
+            Tickets(
+                Name: "Early Bird - Iridium",
+                description: "Non-refundable VIP experience with exclusive standing area, fast-track entry, premium bar access, and dedicated restrooms. Includes limited edition event merchandise.",
+                price: 1_610_000,
+                quota: 0
+            ),
+            Tickets(
+                Name: "Early Bird - Wood",
+                description: "Budget-friendly standing area ticket with basic amenities. Perfect for students and those looking for affordable access to the event.",
+                price: 805_000,
+                quota: 500
+            ),
+            Tickets(
+                Name: "Early Bird - Copper",
+                description: "Mid-range standing ticket with good viewing angles. Includes access to standard food and beverage vendors and general restroom facilities.",
+                price: 977_500,
+                quota: 300
+            )
         ]
-        
+
         let concertTickets = [
-            Tickets(Name: "Bronze", description: "General admission standing area", price: 500_000, quota: 200),
-            Tickets(Name: "Silver", description: "Reserved seating", price: 750_000, quota: 150),
-            Tickets(Name: "Gold", description: "Premium reserved seating", price: 1_000_000, quota: 100),
-            Tickets(Name: "VIP", description: "Front row with meet & greet", price: 1_500_000, quota: 50)
+            Tickets(
+                Name: "Bronze - General Admission",
+                description: "Access to general standing area with basic facilities. First-come, first-served space with multiple viewing screens. Includes access to standard food vendors and restrooms.",
+                price: 500_000,
+                quota: 1000
+            ),
+            Tickets(
+                Name: "Silver - Reserved Seating",
+                description: "Assigned seating in mid-level sections with good viewing angles. Includes dedicated entry lane and access to premium food vendors. Seat cushions available for rent.",
+                price: 750_000,
+                quota: 500
+            ),
+            Tickets(
+                Name: "Gold - Premium Reserved",
+                description: "Premium seating in lower sections with excellent sightlines. Includes fast-track entry, complimentary program, and access to exclusive lounge area with private bars.",
+                price: 1_000_000,
+                quota: 0
+            ),
+            Tickets(
+                Name: "VIP - Ultimate Experience",
+                description: "Best seats in house with meet-and-greet opportunity (subject to artist availability). Includes premium parking, exclusive merchandise, backstage tour, and gourmet catering. Limited availability.",
+                price: 1_500_000,
+                quota: 50
+            ),
+            Tickets(
+                Name: "Platinum - Backstage Access",
+                description: "Front row seats with guaranteed artist meet-and-greet, soundcheck viewing, and after-show party access. Includes all VIP amenities plus personal concierge service.",
+                price: 2_500_000,
+                quota: 20
+            )
         ]
-        
+
         let musicalTickets = [
-            Tickets(Name: "Balcony", description: "Upper level seating", price: 400_000, quota: 100),
-            Tickets(Name: "Orchestra", description: "Main floor seating", price: 800_000, quota: 80),
-            Tickets(Name: "Box", description: "Private box seating", price: 1_200_000, quota: 20)
+            Tickets(
+                Name: "Balcony",
+                description: "Upper level seating with elevated view of the stage. Perfect for enjoying the full spectacle of the production. Some seats may have partial obstructions - please check seating chart.",
+                price: 400_000,
+                quota: 300
+            ),
+            Tickets(
+                Name: "Orchestra - Standard",
+                description: "Main floor seating with good sightlines to the stage. Center sections offer the best audio experience. Comfortable padded seats with ample legroom.",
+                price: 800_000,
+                quota: 200
+            ),
+            Tickets(
+                Name: "Orchestra - Premium",
+                description: "Prime main floor seating in center sections. Includes program booklet and coat check service. Ideal for the best overall theater experience.",
+                price: 1_100_000,
+                quota: 150
+            ),
+            Tickets(
+                Name: "Box Seats",
+                description: "Private box seating for 4-6 persons with personalized service. Includes complimentary champagne and snacks, private restroom access, and the most exclusive viewing experience.",
+                price: 1_200_000,
+                quota: 0
+            ),
+            Tickets(
+                Name: "Opening Night Gala",
+                description: "Premium orchestra seating for opening night performance. Includes post-show reception with cast members, gourmet catering, and souvenir program.",
+                price: 1_800_000,
+                quota: 100
+            )
         ]
-        
+
         let festivalTickets = [
-            Tickets(Name: "1-Day Pass", description: "Access for one day", price: 350_000, quota: 300),
-            Tickets(Name: "3-Day Pass", description: "Access all festival days", price: 900_000, quota: 200),
-            Tickets(Name: "VIP Pass", description: "All days + premium perks", price: 1_250_000, quota: 50)
+            Tickets(
+                Name: "1-Day General Pass",
+                description: "Access to all general areas for one festival day. Includes entry to all main stages, food markets, and standard facilities. Does not include camping or premium areas.",
+                price: 350_000,
+                quota: 5000
+            ),
+            Tickets(
+                Name: "3-Day General Pass",
+                description: "Full weekend access to general festival areas. Best value for experiencing the complete festival lineup across multiple days. Includes re-entry privileges.",
+                price: 900_000,
+                quota: 0
+            ),
+            Tickets(
+                Name: "VIP Weekend Pass",
+                description: "3-day access with premium amenities: dedicated viewing areas at main stages, fast-lane entry, VIP lounge with complimentary drinks, premium restrooms, and charging stations.",
+                price: 1_250_000,
+                quota: 500
+            ),
+            Tickets(
+                Name: "Platinum Experience",
+                description: "Ultimate festival package with backstage access, artist meet-and-greet opportunities (subject to availability), gourmet catering, and luxury rest areas. Includes all VIP perks plus exclusive merchandise.",
+                price: 2_000_000,
+                quota: 100
+            ),
+            Tickets(
+                Name: "Family Package (2 Adults + 2 Kids)",
+                description: "Special discounted package for families. Includes 3-day general access for two adults and two children (ages 6-12). Children under 6 enter free with adult.",
+                price: 1_500_000,
+                quota: 200
+            )
         ]
         
         let calendar = Calendar.current
@@ -134,9 +243,9 @@ class EventViewModel: ObservableObject {
                 city: "Bali",
                 location: "Kawasan Pariwisata Nusa Dua, BTDC Lot N-3, Benoa, Kuta Selatan, Benoa, South Kuta, Nusa Dua, Bali",
                 discountPercentage: 0,
-                time: "",
-                descriptionTitle: "",
-                description: "",
+                time: "20:00 - 22:30 WITA",
+                descriptionTitle: "Broadway-style musical extravaganza",
+                description: "Experience the magic of Wicked Wonders, a Broadway-style musical that will transport you to a world of fantasy and wonder. Featuring an all-star cast, breathtaking sets, and unforgettable musical numbers, this is a theatrical experience you won't want to miss.",
                 tickets: musicalTickets,
                 category: "Musical",
                 type: "Musical",
@@ -153,9 +262,9 @@ class EventViewModel: ObservableObject {
                 city: "Blitar",
                 location: "Komplek Gedung Kesenian Aryo, Jl. Kenari, Plosokerep, Kec. Sananwetan, Kota Blitar, Jawa Timur",
                 discountPercentage: 10,
-                time: "",
-                descriptionTitle: "",
-                description: "",
+                time: "19:30 - 22:00 WIB",
+                descriptionTitle: "Alternative rock concert experience",
+                description: "13lack Parade brings their unique blend of alternative rock to Blitar for one night only. Featuring special guests and a spectacular light show, this concert promises to be an unforgettable experience for music lovers.",
                 tickets: concertTickets,
                 category: "Concert",
                 type: "Concert",
@@ -172,12 +281,12 @@ class EventViewModel: ObservableObject {
                 city: "Bandung",
                 location: "Jl. Dr. Setiabudi No.438, Gudangkahuripan, Kec. Lembang, Kota Bandung, Jawa Barat",
                 discountPercentage: 0,
-                time: "",
-                descriptionTitle: "",
-                description: "",
+                time: "10:00 - 23:00 WIB",
+                descriptionTitle: "Annual music and arts festival",
+                description: "Vierratale returns for its 5th year, bringing together the best in music, art, and culture. With multiple stages featuring international and local artists, food trucks, art installations, and more, this is Bandung's premier cultural event.",
                 tickets: festivalTickets,
-                category: "Concert",
-                type: "Concert",
+                category: "Festival",
+                type: "Festival",
                 dateAdded: fourDaysAgo,
                 isBookmarked: false,
                 isPopular: true
@@ -191,9 +300,9 @@ class EventViewModel: ObservableObject {
                 city: "Jakarta",
                 location: "Jl. Jend. Sudirman No.1 No.Kav. 50 1, RT.1/RW.4, Karet Semanggi, Kecamatan Setiabudi, Kota Jakarta Selatan",
                 discountPercentage: 0,
-                time: "",
-                descriptionTitle: "",
-                description: "",
+                time: "20:00 - 22:00 WIB",
+                descriptionTitle: "Legendary R&B artist live in concert",
+                description: "Multi-Grammy award winner Babyface brings his timeless hits to Jakarta for a special one-night-only performance. Experience the smooth vocals and masterful songwriting that made him an R&B legend.",
                 tickets: concertTickets,
                 category: "Concert",
                 type: "Concert",
@@ -210,16 +319,16 @@ class EventViewModel: ObservableObject {
                 city: "Jakarta",
                 location: "Ciputra Artpreneur, RT.18 / RW.4, South Jakarta City, Jakarta, Indonesia, South Jakarta",
                 discountPercentage: 10,
-                time: "",
-                descriptionTitle: "",
-                description: "",
+                time: "15:00 - 17:30 WIB",
+                descriptionTitle: "Beloved Indonesian musical returns",
+                description: "The critically acclaimed musical adaptation of the beloved Indonesian film returns with a brand new production. Featuring an all-star cast and updated musical arrangements, this is a must-see for fans of Indonesian musical theater.",
                 tickets: musicalTickets,
                 category: "Musical",
                 type: "Musical",
                 dateAdded: today,
                 isBookmarked: false,
                 isPopular: true
-            ),
+            )
         ]
         
         self.events = allEvents

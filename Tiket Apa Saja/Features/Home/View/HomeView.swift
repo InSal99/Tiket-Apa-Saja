@@ -14,7 +14,8 @@ struct HomeView: View {
     var body: some View {
                 ScrollView {
                     VStack {
-                        HeroCarouselView(promos: homeViewModel.promos)
+                        Carousel(images: homeViewModel.promos)
+                            .padding(.vertical, AppSizing.spacing400)
                         
                         CategoriesTilesView(
                             categories: homeViewModel.categoryViewModel.categories,
@@ -22,18 +23,23 @@ struct HomeView: View {
                         )
                         
                         SectionsView(
-                            locationName: homeViewModel.locationName,
+                            navigationPath: $navigationPath, locationName: homeViewModel.locationName,
                             entertainments: homeViewModel.entertainmentViewModel.entertainments, attractions: homeViewModel.attractionViewModel.attractions, popularEvents: homeViewModel.eventViewModel.getPopularEvents(), localEvents: homeViewModel.handleLocalEvents(),
                             onSubscriptionToggle: homeViewModel.handleSubscriptionToggle
                         )
                     }
                 }
             .background(.gray1)
-            .onChange(of: homeViewModel.navigateToCategory) {_, category in
+            .onChange(of: homeViewModel.navigateToCategory) { _, category in
                 if let category = category, category.label == "Event" {
                     homeViewModel.navigateToCategory = nil
-                    navigationPath.append(category)
+                    DispatchQueue.main.async {
+                        navigationPath.append(category)
+                    }
                 }
+            }
+            .navigationDestination(for: Event.self) { event in
+                EventDetailView(navigationPath: $navigationPath, event: event)
             }
             .navigationBarHidden(true)
             .safeAreaInset(edge: .top, spacing: AppSizing.spacing0) {
@@ -94,14 +100,6 @@ struct TopAppBarView: View {
     }
 }
 
-struct HeroCarouselView: View {
-    let promos: [String]
-    
-    var body: some View {
-        Carousel(images: promos)
-            .padding(AppSizing.spacing400)
-    }
-}
 
 struct CategoriesTilesView: View {
     let categories: [Category]
@@ -124,6 +122,8 @@ struct CategoriesTilesView: View {
 }
 
 struct SectionsView: View {
+    @Binding var navigationPath: NavigationPath
+    
     let locationName: String
     let entertainments: [Entertainment]
     let attractions: [Attraction]
@@ -138,8 +138,20 @@ struct SectionsView: View {
                 action: { print("See All Popular Events") },
                 content: {
                     ForEach(popularEvents) { item in
-                        ProductCard(image: item.image, date: item.date, title: item.title, location: item.city, price: item.lowestPrice, haveDiscount: item.discountPercentage != 0, discountPercentage: item.discountPercentage, action: { print(item.title + " Selected") })
-                            .size(type: .small)
+                        ProductCard(
+                            image: item.image,
+                            date: item.date,
+                            title: item.title,
+                            location: item.city,
+                            price: item.lowestPrice,
+                            haveDiscount: item.discountPercentage != 0,
+                            discountPercentage: item.discountPercentage,
+                            action: {
+                                print("Go to \(item.title) detail")
+                                navigationPath.append(item)
+                            }
+                        )
+                        .size(type: .small)
                     }
                 }
             )
@@ -159,8 +171,20 @@ struct SectionsView: View {
                 action: { print("See All Events in " + locationName) },
                 content: {
                     ForEach(localEvents) { item in
-                        ProductCard(image: item.image, date: item.date, title: item.title, location: item.city, price: item.lowestPrice, haveDiscount: item.discountPercentage != 0, discountPercentage: item.discountPercentage, action: { print(item.title + " Selected") })
-                            .size(type: .small)
+                        ProductCard(
+                            image: item.image,
+                            date: item.date,
+                            title: item.title,
+                            location: item.city,
+                            price: item.lowestPrice,
+                            haveDiscount: item.discountPercentage != 0,
+                            discountPercentage: item.discountPercentage,
+                            action: {
+                                print("Go to \(item.title) detail")
+                                navigationPath.append(item)
+                            }
+                        )
+                        .size(type: .small)
                     }
                 }
             )
@@ -223,7 +247,8 @@ struct TASSection<Content: View>: View {
 }
 
 #Preview {
-    @Previewable @State var navigationPath = NavigationPath()
-    return HomeView(navigationPath: $navigationPath)
-        .environmentObject(HomeViewModel())
+//    @Previewable @State var navigationPath = NavigationPath()
+//    return HomeView(navigationPath: $navigationPath)
+//        .environmentObject(HomeViewModel())
+    ContentView()
 }
