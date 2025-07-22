@@ -8,21 +8,141 @@
 import SwiftUI
 
 struct ContentView: View {
+    @State private var selectedTab: BottomAppBar.Tab = .home
+    @State private var navigationPath = NavigationPath()
+    @StateObject private var eventViewModel = EventViewModel()
+    
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        NavigationStack(path: $navigationPath) {
+            VStack(spacing: AppSizing.spacing0) {
+                TabView(selection: $selectedTab) {
+                    HomeView(navigationPath: $navigationPath)
+                        .tag(BottomAppBar.Tab.home)
+                    HomeView(navigationPath: $navigationPath)
+                        .tag(BottomAppBar.Tab.tickets)
+                    HomeView(navigationPath: $navigationPath)
+                        .tag(BottomAppBar.Tab.profile)
+                }
+                .tabViewStyle(.page(indexDisplayMode: .never))
+                .background(.gray3)
+                
+                BottomAppBar(selectedTab: $selectedTab)
+            }
+            .padding(.bottom, AppSizing.spacing500)
+            .ignoresSafeArea()
+            .navigationDestination(for: Category.self) { category in
+                if category.label == "Event" {
+                    EventListView(navigationPath: $navigationPath)
+                }
+            }
+            .navigationDestination(for: Event.self) { event in
+                EventDetailView(navigationPath: $navigationPath, event: event)
+            }
+            .navigationDestination(for: UUID.self) { eventID in
+                if let event = eventViewModel.getEvent(by: eventID) {
+                    EventDetailView(navigationPath: $navigationPath, event: event)
+                } else {
+                    Text("Event not found")
+                        .onAppear {
+                            // Fallback to home if event not found
+                            navigationPath.removeLast()
+                        }
+                }
+            }
+            .onOpenURL { url in
+                handleDeepLink(url: url)
+            }
         }
-        .padding()
     }
     
-    init() {
-        for familyName in UIFont.familyNames{
-            print (familyName )
-            for fontName in UIFont.fontNames(forFamilyName:familyName) {
-                print("-- \(fontName)")
+    private func handleDeepLink(url: URL) {
+        guard url.scheme == "tiketapasaja",
+              url.pathComponents.count >= 3,
+              url.pathComponents[1] == "events",
+              let eventID = UUID(uuidString: url.pathComponents[2])
+        else { return }
+        
+        navigationPath.append(eventID)
+    }
+}
+
+struct BottomAppBar: View {
+    @Binding var selectedTab: Tab
+    
+    var body: some View {
+            HStack {
+                ForEach(Tab.allCases, id: \.self) { tab in
+                    TabItem(
+                        tab: tab,
+                        isSelected: selectedTab == tab,
+                        action: { selectedTab = tab }
+                    )
+                }
+            }
+            .padding(.vertical, AppSizing.spacing200)
+            .background(Color.gray3)
+    }
+    
+    enum Tab: Int, CaseIterable {
+        case home, tickets, profile
+        
+        var title: String {
+            switch self {
+            case .home: return "Home"
+            case .tickets: return "My Ticket"
+            case .profile: return "Profile"
+            }
+        }
+        
+        var icon: String {
+            switch self {
+            case .home: return "menu-home"
+            case .tickets: return "menu-ticket"
+            case .profile: return "menu-person"
+            }
+        }
+        
+        func logMessage() {
+            print("Welcome to \(title) Page")
+        }
+    }
+}
+
+struct TabItem: View {
+    let tab: BottomAppBar.Tab
+    let isSelected: Bool
+    let action: () -> Void
+    
+    @State private var isPressed = false
+    private let animation = Animation.interactiveSpring(response: 0.4, dampingFraction: 0.8)
+    
+    var body: some View {
+        Button(action: performAction) {
+            VStack(spacing: 4) {
+                Image(tab.icon)
+                    .resizable()
+                    .renderingMode(.template)
+                    .frame(width: 24, height: 24)
+                    .scaleEffect(isPressed ? 0.8 : 1.0)
+                
+                Text(tab.title)
+                    .font(.Label3())
+            }
+            .foregroundColor(isSelected ? .orange9 : .gray10)
+        }
+        .frame(maxWidth: .infinity)
+        .buttonStyle(.plain)
+    }
+    
+    private func performAction() {
+        withAnimation(animation) {
+            isPressed = true
+        }
+        action()
+        tab.logMessage()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            withAnimation(animation) {
+                isPressed = false
             }
         }
     }
