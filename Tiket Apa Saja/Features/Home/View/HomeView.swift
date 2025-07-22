@@ -139,6 +139,7 @@ struct SectionsView: View {
                 content: {
                     ForEach(popularEvents) { item in
                         ProductCard(image: item.image, date: item.date, title: item.title, location: item.city, price: item.lowestPrice, haveDiscount: item.discountPercentage != 0, discountPercentage: item.discountPercentage, action: { print(item.title + " Selected") })
+                            .size(type: .small)
                     }
                 }
             )
@@ -159,6 +160,7 @@ struct SectionsView: View {
                 content: {
                     ForEach(localEvents) { item in
                         ProductCard(image: item.image, date: item.date, title: item.title, location: item.city, price: item.lowestPrice, haveDiscount: item.discountPercentage != 0, discountPercentage: item.discountPercentage, action: { print(item.title + " Selected") })
+                            .size(type: .small)
                     }
                 }
             )
