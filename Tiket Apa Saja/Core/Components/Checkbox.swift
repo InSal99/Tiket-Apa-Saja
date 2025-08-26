@@ -62,5 +62,6 @@ extension Checkbox {
 }
 
 #Preview {
-    Checkbox(isActive: .constant(false)).showLabel(label: "Balikpapan")
+    Checkbox(isActive: .constant(false))
+        .showLabel(label: "Balikpapan")
 }

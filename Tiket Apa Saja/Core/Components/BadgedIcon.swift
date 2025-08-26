@@ -53,5 +53,5 @@ struct BadgedIcon: View {
 }
 
 #Preview {
-    BadgedIcon(iconName: "notifications", showBadge: true, action: {})
+    BadgedIcon(iconName: "notifications", showBadge: false, action: {})
 }
